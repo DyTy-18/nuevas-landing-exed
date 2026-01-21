@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unifranz EXED | Health Intelligence</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@100;300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "ibm-black": "#121212",
+              "clinical-teal": "#0ee19f",
+              "clinical-teal-dark": "#00b67a",
+              "light-gray": "#f4f4f4",
+              "subtle-gray": "#f8fafc",
+              "border-gray": "#e2e8f0",
+            },
+            fontFamily: {
+              sans: ['"Archivo"', "sans-serif"],
+            },
+            backgroundImage: {
+              "hero-medical":
+                "url('https://lirp.cdn-website.com/483d3401/dms3rep/multi/opt/Interior+Office+Painting-1920w.jpeg')",
+            },
+            boxShadow: {
+              "soft-xl": "0 20px 40px -10px rgba(0, 0, 0, 0.05)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      body {
+        background-color: #ffffff;
+        color: #121212;
+        font-family: "Archivo", sans-serif;
+        font-weight: 300;
+      }
+
+      .hero-overlay {
+        background: linear-gradient(
+          90deg,
+          #ffffff 15%,
+          rgba(255, 255, 255, 0.92) 50%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+      }
+
+      /* Estilos Ecualizador */
+      .eq-track-container {
+        position: relative;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        width: 100%;
+      }
+      .eq-track-bg {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: #e5e7eb;
+        border-radius: 99px;
+      }
+      .eq-fill {
+        position: absolute;
+        left: 0;
+        height: 4px;
+        background: #121212;
+        transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 1;
+        border-radius: 99px;
+      }
+      .eq-node {
+        width: 16px;
+        height: 16px;
+        background: #ffffff;
+        border: 2px solid #d1d5db;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        transition: all 0.2s ease;
+        border-radius: 50%;
+      }
+      /* Hover suave en los nodos */
+      .group:hover .eq-node {
+        border-color: #9ca3af;
+      }
+
+      .eq-node.active {
+        background: #0ee19f;
+        border-color: #0ee19f;
+        transform: translateY(-50%) scale(1.2);
+        box-shadow: 0 0 0 4px rgba(14, 225, 159, 0.2);
+      }
+      /* Posiciones exactas */
+      .n1 {
+        left: 0%;
+      }
+      .n2 {
+        left: 25%;
+      }
+      .n3 {
+        left: 50%;
+      }
+      .n4 {
+        left: 75%;
+      }
+      .n5 {
+        left: 100%;
+        margin-left: -16px;
+      }
+
+      .click-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+      }
+      .click-zone {
+        flex: 1;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.8s ease-out;
+      }
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .font-tech {
+        font-weight: 100;
+        letter-spacing: 0.15em;
+      }
+
+      /* Estilos para botón deshabilitado */
+      .btn-disabled {
+        background-color: #e5e7eb !important;
+        color: #9ca3af !important;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .desc-box {
+        transition: all 0.3s ease;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <!-- NAV (Logo Solo) -->
+    <nav
+      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 flex items-center transition-all duration-300"
+    >
+      <div
+        class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-6">
+          <!-- Solo Logo -->
+          <img
+            src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
+            alt="Unifranz"
+            class="h-10 md:h-12 w-auto object-contain"
+          />
+        </div>
+
+        <a
+          href="#matrix"
+          class="text-[10px] font-bold text-ibm-black tracking-[0.15em] border border-gray-200 px-6 py-2.5 rounded-full hover:bg-ibm-black hover:text-white transition-all uppercase"
+        >
+          Iniciar Diagnóstico
+        </a>
+      </div>
+    </nav>
+
+    <!-- HERO SECTION (Altura Reducida) -->
+    <header
+      class="relative w-full h-[80vh] min-h-[550px] bg-hero-medical bg-cover bg-center bg-no-repeat mt-20 flex items-center"
+    >
+      <div class="absolute inset-0 hero-overlay"></div>
+
+      <div
+        class="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12"
+      >
+        <div class="space-y-10 reveal pt-8 lg:pt-0">
+          <div class="flex flex-wrap gap-3">
+            <span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Centros Hospitalarios</span
+            >
+            <span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Asistencia Operativa</span
+            >
+            <span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Centros de D</span
+            >
+          </div>
+
+          <div>
+            <h2
+              class="text-xl md:text-2xl font-light text-gray-500 mb-4 leading-relaxed max-w-md"
+            >
+              Proyectos de Inteligencia Artificial <br />
+              <span class="text-ibm-black font-normal"
+                >para el Sector Salud</span
+              >
+            </h2>
+
+            <h1
+              class="text-5xl md:text-2xl lg:text-5xl font-tech text-ibm-black leading-none tracking-wide -ml-1"
+            >
+              DIAGNOSTICO<br />
+              <span class="text-clinical-teal font-medium tracking-normal"
+                >DE MADUREZ DIGITAL</span
+              >
+            </h1>
+          </div>
+
+          <div class="h-px w-24 bg-gray-300"></div>
+
+          <p
+            class="text-sm md:text-base text-gray-500 font-light max-w-sm leading-relaxed"
+          >
+            Antes de invertir en Inteligencia Artificial, necesitas saber
+            exactamente por dónde empezar. Esta herramienta te permite realizar
+            un diagnóstico claro y práctico de la madurez digital de tu
+            institución de salud para identificar y priorizar el primer proyecto
+            de IA que realmente genere impacto. <br />
+            Al finalizar, sabrás con precisión qué proyectos de IA implementar
+            primero para mejorar eficiencia, reducir carga operativa y obtener
+            resultados visibles en tus centros hospitalarios, unidades de
+            diagnóstico y redes de atención ambulatoria.
+          </p>
+
+          <div class="pt-2">
+            <a href="#matrix" class="inline-flex items-center gap-4 group">
+              <div
+                class="h-12 w-12 rounded-full bg-ibm-black text-white flex items-center justify-center group-hover:bg-clinical-teal transition-colors shadow-lg"
+              >
+                <svg
+                  class="w-4 h-4 group-hover:translate-y-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  ></path>
+                </svg>
+              </div>
+              <span
+                class="text-xs font-bold uppercase tracking-[0.2em] text-ibm-black group-hover:text-clinical-teal transition-colors"
+                >Evaluar Institución</span
+              >
+            </a>
+          </div>
+        </div>
+        <div class="hidden lg:block"></div>
+      </div>
+    </header>
+
+    <!-- MATRIX SECTION -->
+    <section
+      id="matrix"
+      class="py-16 md:py-24 bg-subtle-gray border-t border-gray-100"
+    >
+      <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12">
+        <!-- Header -->
+        <div
+          class="mb-8 border-b border-gray-200 pb-6 flex flex-col md:flex-row justify-between items-end gap-6 reveal"
+        >
+          <div>
+            <h2 class="text-3xl md:text-4xl font-light text-ibm-black mb-2">
+              Herramienta de Diagnóstico
+            </h2>
+            <p class="text-sm text-gray-500 font-light max-w-lg">
+              Lee cada pregunta con atención y selecciona un único número del 1
+              al 5 en cada caso. Elige la opción que mejor describa cómo
+              funcionan actualmente los procesos en tu institución, no cómo
+              deberían funcionar ni cómo te gustaría que funcionaran en el
+              futuro. Responde considerando la operación real del día a día,
+              incluyendo los sistemas, los datos, las personas y las prácticas
+              vigentes. Este diagnóstico no evalúa el desempeño, sino que
+              permite identificar con claridad el punto de partida para
+              priorizar proyectos de Inteligencia Artificial de alto impacto.
+              Puedes apoyarte en las descripciones y referencias de cada nivel
+              que aparecen en el cuadro lateral para seleccionar la opción que
+              mejor represente la realidad actual de tu institución. Una vez
+              completado el diagnóstico, presiona “Generar informe” para obtener
+              los resultados.
+            </p>
+          </div>
+          <div class="text-right hidden md:block">
+            <div class="flex items-center gap-2">
+              <span
+                class="w-2 h-2 bg-clinical-teal rounded-full animate-pulse"
+              ></span>
+              <span
+                class="text-[10px] font-bold uppercase tracking-widest text-gray-400"
+                >Escala 1 - 5</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 reveal">
+          <!-- COLUMNA IZQUIERDA: CONTROLES -->
+          <div
+            class="lg:col-span-8 bg-white border border-gray-200 p-6 md:p-10 shadow-soft-xl rounded-sm"
+          >
+            <div class="flex flex-col gap-10">
+              <!-- 1. Sistemas -->
+              <div class="group" onmouseleave="resetPreview('sys')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Sistemas y Tecnología
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Cómo están conectados hoy los sistemas de tu institución?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-sys"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-sys-1"></div>
+                      <div class="eq-node n2" id="node-sys-2"></div>
+                      <div class="eq-node n3" id="node-sys-3"></div>
+                      <div class="eq-node n4" id="node-sys-4"></div>
+                      <div class="eq-node n5" id="node-sys-5"></div>
+
+                      <!-- Capa de Interacción (Hover + Click) -->
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 1)"
+                          onclick="setVal('sys', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 2)"
+                          onclick="setVal('sys', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 3)"
+                          onclick="setVal('sys', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 4)"
+                          onclick="setVal('sys', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 5)"
+                          onclick="setVal('sys', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-sys"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-sys"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-sys">
+                    Los sistemas no se hablan entre sí y mucho se hace a mano.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. Datos -->
+              <div class="group" onmouseleave="resetPreview('data')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Datos e Información
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Qué tan confiable es la información con la que trabajan?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-data"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-data-1"></div>
+                      <div class="eq-node n2" id="node-data-2"></div>
+                      <div class="eq-node n3" id="node-data-3"></div>
+                      <div class="eq-node n4" id="node-data-4"></div>
+                      <div class="eq-node n5" id="node-data-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 1)"
+                          onclick="setVal('data', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 2)"
+                          onclick="setVal('data', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 3)"
+                          onclick="setVal('data', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 4)"
+                          onclick="setVal('data', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 5)"
+                          onclick="setVal('data', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-data"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-data"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-data">
+                    La información está desordenada, incompleta o duplicada.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. Reglas -->
+              <div class="group" onmouseleave="resetPreview('rules')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Reglas y Privacidad
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Cómo se gestionan los datos y la toma de decisiones?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-rules"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-rules-1"></div>
+                      <div class="eq-node n2" id="node-rules-2"></div>
+                      <div class="eq-node n3" id="node-rules-3"></div>
+                      <div class="eq-node n4" id="node-rules-4"></div>
+                      <div class="eq-node n5" id="node-rules-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 1)"
+                          onclick="setVal('rules', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 2)"
+                          onclick="setVal('rules', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 3)"
+                          onclick="setVal('rules', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 4)"
+                          onclick="setVal('rules', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 5)"
+                          onclick="setVal('rules', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-rules"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-rules"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-rules">
+                    No hay reglas claras sobre uso de datos o responsabilidades.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 4. Personas -->
+              <div class="group" onmouseleave="resetPreview('people')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">Personas</h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Con qué tan preparado está el equipo para ejecutar mejoras
+                    con tecnología?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-people"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-people-1"></div>
+                      <div class="eq-node n2" id="node-people-2"></div>
+                      <div class="eq-node n3" id="node-people-3"></div>
+                      <div class="eq-node n4" id="node-people-4"></div>
+                      <div class="eq-node n5" id="node-people-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 1)"
+                          onclick="setVal('people', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 2)"
+                          onclick="setVal('people', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 3)"
+                          onclick="setVal('people', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 4)"
+                          onclick="setVal('people', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 5)"
+                          onclick="setVal('people', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-people"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-people"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-people">
+                    No hay personas dedicadas a datos o mejora digital.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 5. Uso -->
+              <div class="group" onmouseleave="resetPreview('use')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Uso real de IA
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Qué tan avanzada está la institución en el uso práctico de
+                    IA?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-use"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-use-1"></div>
+                      <div class="eq-node n2" id="node-use-2"></div>
+                      <div class="eq-node n3" id="node-use-3"></div>
+                      <div class="eq-node n4" id="node-use-4"></div>
+                      <div class="eq-node n5" id="node-use-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 1)"
+                          onclick="setVal('use', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 2)"
+                          onclick="setVal('use', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 3)"
+                          onclick="setVal('use', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 4)"
+                          onclick="setVal('use', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 5)"
+                          onclick="setVal('use', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-use"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-use"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-use">
+                    No se usa IA; solo se habla del tema.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA: SCORE -->
+          <div class="lg:col-span-4 sticky top-4 h-fit">
+            <div
+              class="bg-ibm-black text-white p-6 lg:p-10 shadow-2xl relative overflow-hidden rounded-sm flex flex-col justify-between min-h-0 lg:min-h-[500px]"
+            >
+              <div
+                class="absolute inset-0 opacity-10 pointer-events-none"
+                style="
+                  background-image: radial-gradient(
+                    #ffffff 1px,
+                    transparent 1px
+                  );
+                  background-size: 20px 20px;
+                "
+              ></div>
+
+              <div class="relative z-10 text-center mb-6">
+                <span
+                  class="text-[10px] font-bold uppercase tracking-widest text-clinical-teal"
+                  >RESULTADO GLOBAL</span
+                >
+              </div>
+
+              <!-- SCOREBOARD -->
+              <div
+                class="relative z-10 flex flex-col items-center justify-center py-4 lg:py-6"
+              >
+                <div class="relative w-40 h-40 lg:w-64 lg:h-64 mb-4 lg:mb-6">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 256 256">
+                    <circle
+                      cx="128"
+                      cy="128"
+                      r="110"
+                      stroke="#262626"
+                      stroke-width="6"
+                      fill="none"
+                    ></circle>
+                    <circle
+                      id="score-circle"
+                      cx="128"
+                      cy="128"
+                      r="110"
+                      stroke="#0ee19f"
+                      stroke-width="10"
+                      fill="none"
+                      stroke-dasharray="691"
+                      stroke-dashoffset="691"
+                      class="transition-all duration-700 ease-out"
+                      style="
+                        filter: drop-shadow(0 0 15px rgba(14, 225, 159, 0.5));
+                      "
+                    ></circle>
+                  </svg>
+                  <div
+                    class="absolute inset-0 flex flex-col items-center justify-center"
+                  >
+                    <span
+                      class="text-5xl lg:text-8xl font-thin tracking-tighter"
+                      id="total-score"
+                      >5</span
+                    >
+                    <span
+                      class="text-sm text-gray-500 mt-2 uppercase tracking-widest"
+                      >/ 25 Pts</span
+                    >
+                  </div>
+                </div>
+                <h3
+                  class="text-lg lg:text-xl uppercase tracking-[0.15em] text-clinical-teal font-bold mb-2 lg:mb-3 text-center"
+                  id="result-category"
+                >
+                  NIVEL INICIAL
+                </h3>
+                <p
+                  class="text-xs lg:text-sm text-gray-300 text-center max-w-[280px] leading-relaxed font-light"
+                  id="result-action"
+                >
+                  Primero hay que ordenar la base
+                </p>
+              </div>
+
+              <div class="relative z-10 mt-6">
+                <button
+                  onclick="openModal()"
+                  class="w-full py-4 bg-white text-ibm-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-clinical-teal hover:text-ibm-black transition-colors flex items-center justify-center gap-3"
+                >
+                  <span>GENERAR INFORME</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL -->
+    <div
+      id="leadModal"
+      class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4"
+    >
+      <div
+        class="absolute inset-0 bg-ibm-black/90 backdrop-blur-md transition-opacity"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="bg-white w-full max-w-md p-10 relative z-10 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col rounded-sm border-t-4 border-clinical-teal"
+        id="modalContent"
+      >
+        <div class="mb-8">
+          <h3 class="text-2xl font-light text-ibm-black mb-1">
+            Resultados Listos
+          </h3>
+          <p class="text-xs text-gray-500 uppercase tracking-wide">
+            Ingrese sus datos para ver el informe detallado
+          </p>
+        </div>
+        <form class="space-y-5">
+          <div class="relative z-0 w-full group">
+            <input
+              type="text"
+              id="inputName"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+              required
+              oninput="validateForm()"
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Nombre Completo</label
+            >
+          </div>
+          <div class="relative z-0 w-full group">
+            <input
+              type="email"
+              id="inputEmail"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+              required
+              oninput="validateForm()"
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Correo</label
+            >
+          </div>
+          <div class="relative z-0 w-full group">
+            <input
+              type="tel"
+              id="inputPhone"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Número Telefónico</label
+            >
+          </div>
+          <button
+            type="button"
+            id="btnSubmit"
+            onclick="goToResults()"
+            class="w-full py-4 text-white text-xs font-bold uppercase tracking-widest transition-all mt-6 btn-disabled"
+          >
+            Descargar Informe
+          </button>
+        </form>
+        <button
+          onclick="closeModal()"
+          class="absolute top-4 right-4 text-gray-300 hover:text-ibm-black transition-colors"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- FOOTER SIMPLE -->
+    <footer class="bg-white border-t border-gray-200 py-12">
+      <div
+        class="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <div class="flex items-center gap-4">
+          <img
+            src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
+            class="h-24 w-auto grayscale"
+            alt="Unifranz"
+          />
+          <span class="text-[10px] text-gray-400">© 2026</span>
+        </div>
+        <div class="flex gap-6 text-[10px] uppercase font-bold text-gray-500">
+          <a href="#" class="hover:text-ibm-black">Privacidad</a>
+          <a href="#" class="hover:text-ibm-black">Términos de Uso</a>
+          <a href="#" class="hover:text-ibm-black">Contacto</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- LOGIC -->
+    <script>
+      const matrixData = {
+        sys: [
+          "Los sistemas no se hablan entre sí y mucho se hace a mano.",
+          "Tenemos un sistema principal, pero con poca conexión a otros.",
+          "Algunos sistemas están conectados, no todos, y no siempre funciona bien.",
+          "La mayoría de los sistemas están conectados y la información fluye.",
+          "Los sistemas están bien integrados y la información está casi en tiempo real.",
+        ],
+        data: [
+          "La información está desordenada, incompleta o duplicada.",
+          "Hay información usable, pero requiere mucho trabajo manual.",
+          "La información es bastante ordenada y se revisa periódicamente.",
+          "La información es confiable, clara y se controla su calidad.",
+          "La información está lista para usarse en análisis avanzados o IA.",
+        ],
+        rules: [
+          "No hay reglas claras sobre uso de datos o responsabilidades.",
+          "Hay reglas básicas de privacidad, pero no siempre se siguen.",
+          "Existen responsables y reglas claras para usar la información.",
+          "Las reglas se aplican de forma consistente y se revisan con frecuencia.",
+          "Hay controles claros, ética definida y confianza en el uso de tecnología.",
+        ],
+        people: [
+          "No hay personas dedicadas a datos o mejora digital.",
+          "Hay interés, pero falta experiencia y tiempo asignado.",
+          "Existen personas responsables y apoyo externo si es necesario.",
+          "Hay un equipo interno con roles claros y apoyo directivo.",
+          "El equipo puede diseñar, probar e implementar soluciones de forma continua.",
+        ],
+        use: [
+          "No se usa IA; solo se habla del tema.",
+          "Se han hecho pruebas pequeñas sin impacto real.",
+          "Hay soluciones funcionando en algunas áreas.",
+          "Varias áreas usan IA con resultados medidos.",
+          "La IA está integrada al trabajo diario y genera valor claro.",
+        ],
+      };
+
+      const currentScores = { sys: 1, data: 1, rules: 1, people: 1, use: 1 };
+
+      function setVal(dim, val) {
+        currentScores[dim] = val;
+        updateVisuals(dim, val, false);
+        calculateTotal();
+      }
+
+      // Función para previsualizar sin guardar
+      function previewVal(dim, val) {
+        updateVisuals(dim, val, true);
+      }
+
+      // Función para restaurar el valor guardado
+      function resetPreview(dim) {
+        updateVisuals(dim, currentScores[dim], false);
+      }
+
+      function updateVisuals(dim, val, isPreview) {
+        let width =
+          val === 2
+            ? "25%"
+            : val === 3
+              ? "50%"
+              : val === 4
+                ? "75%"
+                : val === 5
+                  ? "100%"
+                  : "0%";
+        document.getElementById(`fill-${dim}`).style.width = width;
+
+        for (let i = 1; i <= 5; i++) {
+          const node = document.getElementById(`node-${dim}-${i}`);
+          if (i <= val) node.classList.add("active");
+          else node.classList.remove("active");
+        }
+
+        const numEl = document.getElementById(`val-${dim}`);
+        numEl.innerText = val;
+
+        // Estilos visuales para indicar "Preview" vs "Selected"
+        if (isPreview) {
+          numEl.classList.remove("text-gray-300");
+          numEl.classList.add("text-clinical-teal");
+          document
+            .getElementById(`box-${dim}`)
+            .classList.replace("border-gray-200", "border-clinical-teal");
+        } else {
+          numEl.classList.add("text-gray-300");
+          numEl.classList.remove("text-clinical-teal");
+          document
+            .getElementById(`box-${dim}`)
+            .classList.replace("border-clinical-teal", "border-gray-200");
+        }
+
+        // Actualizar texto descriptivo
+        const desc = document.getElementById(`desc-${dim}`);
+        if (desc) desc.innerText = matrixData[dim][val - 1];
+      }
+
+      function calculateTotal() {
+        const values = Object.values(currentScores);
+        const total = values.reduce((a, b) => a + b, 0);
+        let category = "NIVEL INICIAL",
+          action = "Primero hay que ordenar la base";
+        if (total >= 10 && total <= 14) {
+          category = "NIVEL BÁSICO";
+          action = "Se puede empezar con pilotos simples";
+        } else if (total >= 15 && total <= 18) {
+          category = "NIVEL INTERMEDIO";
+          action = "Listo para proyectos reales";
+        } else if (total >= 19 && total <= 22) {
+          category = "NIVEL AVANZADO";
+          action = "Preparado para escalar";
+        } else if (total >= 23) {
+          category = "NIVEL LÍDER";
+          action = "IA integrada al negocio";
+        }
+
+        document.getElementById("total-score").innerText = total;
+        document.getElementById("result-category").innerText = category;
+        document.getElementById("result-action").innerText = action;
+
+        // Circle math: Radius 110 -> Circumference 2 * pi * 110 ≈ 691
+        const maxOffset = 691;
+        document.getElementById("score-circle").style.strokeDashoffset =
+          maxOffset - Math.max(0, (total - 5) / 20) * maxOffset;
+      }
+
+      function validateForm() {
+        const name = document.getElementById("inputName").value.trim();
+        const email = document.getElementById("inputEmail").value.trim();
+        const btn = document.getElementById("btnSubmit");
+        if (name !== "" && email !== "") {
+          btn.classList.remove("btn-disabled");
+          btn.classList.add("bg-ibm-black", "hover:bg-gray-800");
+        } else {
+          btn.classList.add("btn-disabled");
+          btn.classList.remove("bg-ibm-black", "hover:bg-gray-800");
+        }
+      }
+      function openModal() {
+        const m = document.getElementById("leadModal"),
+          c = document.getElementById("modalContent");
+        m.classList.remove("hidden");
+        setTimeout(() => {
+          c.classList.remove("scale-95", "opacity-0");
+          c.classList.add("scale-100", "opacity-100");
+        }, 10);
+      }
+      function closeModal() {
+        const m = document.getElementById("leadModal"),
+          c = document.getElementById("modalContent");
+        c.classList.remove("scale-100", "opacity-100");
+        c.classList.add("scale-95", "opacity-0");
+        setTimeout(() => m.classList.add("hidden"), 300);
+      }
+
+      function goToResults() {
+        const name = document.getElementById("inputName").value.trim();
+        const email = document.getElementById("inputEmail").value.trim();
+        const phone = document.getElementById("inputPhone").value.trim();
+
+        if (name === "" || email === "") return;
+
+        // Guardar datos en localStorage para usar en resultado.html
+        localStorage.setItem(
+          "clinicalNexusData",
+          JSON.stringify({
+            name: name,
+            email: email,
+            phone: phone,
+            scores: currentScores,
+            totalScore: document.getElementById("total-score").innerText,
+          }),
+        );
+
+        // Redirigir a resultado.html
+        window.location.href = "resultado.html";
+      }
+
+      // Inicialización
+      ["sys", "data", "rules", "people", "use"].forEach((dim) =>
+        updateVisuals(dim, 1, false),
+      );
+      calculateTotal();
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("visible");
+          });
+        },
+        { threshold: 0.1 },
+      );
+      document
+        .querySelectorAll(".reveal")
+        .forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

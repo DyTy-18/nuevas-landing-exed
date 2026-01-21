@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unifranz EXED | Reporte Estratégico</title>
+   
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Importar solo Archivo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon': '#03e4a2',      // Verde Element
+                        'neon-dark': '#00c48a', // Verde oscuro para texto sobre blanco
+                        'warning': '#ff9f2a',   // Naranja alerta
+                        'void': '#ffffff',      // Fondo Blanco
+                        'surface': '#f8f9fa',   // Gris muy claro
+                        'surface-hover': '#f0f2f5',
+                        'border-dim': 'rgba(0, 0, 0, 0.08)', // Bordes sutiles oscuros
+                        'text-main': '#18181b', // Negro suave
+                        'text-muted': '#52525b', // Gris medio
+                    },
+                    fontFamily: {
+                        'sans': ['"Archivo"', 'sans-serif'], // Fuente principal
+                        'mono': ['"Archivo"', 'monospace'],  // Usamos Archivo también para datos
+                    },
+                    backgroundImage: {
+                        'grid-subtle': 'linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'progress-grow': 'growWidth 1.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: 0, transform: 'translateY(20px)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        growWidth: {
+                            '0%': { width: '0%' },
+                            '100%': { width: '65%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #18181b;
+            font-family: 'Archivo', sans-serif;
+            font-weight: 300;
+            overflow-x: hidden;
+        }
+
+
+        /* Utilidad de Reveal al hacer scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* Tarjetas Técnicas (Estilo Blanco) */
+        .tech-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+            transition: all 0.3s ease;
+        }
+        .tech-card:hover {
+            border-color: rgba(3, 228, 162, 0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+
+        /* Fondo de Grilla Fina */
+        .bg-grid-fixed {
+            background-size: 40px 40px;
+            background-image:
+                linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+        }
+       
+        /* Tarjetas de Pasos (Roadmap) */
+        .step-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            background: #ffffff;
+        }
+        .step-card:hover {
+            border-color: #03e4a2;
+            background: #f0fdf9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(3, 228, 162, 0.1);
+        }
+
+
+        /* Botón Sólido Negro */
+        .btn-black {
+            background-color: #000;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        .btn-black:hover {
+            background-color: #03e4a2;
+            color: #000;
+        }
+
+
+        ::selection { background: #03e4a2; color: white; }
+    </style>
+</head>
+<body class="antialiased bg-void text-text-main font-sans">
+
+
+    <!-- TOP BAR -->
+    <header class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-border-dim shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="flex items-center gap-6">
+                <!-- Logo Element -->
+                <img src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png" alt="Unifranz Element Logo" class="h-8 w-auto object-contain">
+               
+                <!-- Separador y Estado -->
+                <div class="hidden md:flex items-center gap-3 border-l border-gray-200 pl-6 h-8">
+                    <div class="w-1.5 h-1.5 bg-warning rounded-full animate-pulse"></div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-text-main">Reporte Generado</span>
+                    <span class="text-[10px] font-medium uppercase tracking-widest text-text-muted">ID: #AI-2026-X4</span>
+                </div>
+            </div>
+           
+            <a href="#cta" class="text-[10px] font-bold uppercase tracking-widest text-text-main border border-black/10 px-6 py-3 hover:bg-black hover:text-white transition-colors rounded-sm">
+                Agendar Sesión
+            </a>
+        </div>
+    </header>
+
+
+    <!-- 1. HEADER: EL DIAGNÓSTICO -->
+    <section class="pt-36 pb-20 px-6 border-b border-border-dim relative bg-surface">
+        <div class="absolute inset-0 bg-grid-fixed pointer-events-none opacity-60"></div>
+       
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+               
+                <!-- Columna Izquierda: Tarjeta de Resultado -->
+                <div class="lg:col-span-4 animate-fade-in-up">
+                    <div class="tech-card p-10 h-full flex flex-col justify-between relative overflow-hidden rounded-xl bg-white">
+                        <!-- Decoración de fondo sutil -->
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-warning/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                       
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted block mb-8">Puntaje de Madurez Digital</span>
+                            <div class="flex items-baseline gap-2 mb-4">
+                                <span class="text-8xl font-bold text-text-main tracking-tighter">2.5</span>
+                                <span class="text-2xl text-text-muted font-light">/ 4.0</span>
+                            </div>
+                            <div class="inline-block px-4 py-1.5 bg-warning/10 text-warning text-[10px] font-bold uppercase tracking-widest border border-warning/20 mb-8 rounded-sm">
+                                Estado Emergente
+                            </div>
+                        </div>
+
+
+                        <div class="space-y-8">
+                            <div>
+                                <div class="flex justify-between text-[10px] uppercase tracking-widest mb-3">
+                                    <span class="text-text-muted font-medium">Eficiencia Operativa</span>
+                                    <span class="text-text-main font-bold">65%</span>
+                                </div>
+                                <div class="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-warning animate-progress-grow"></div>
+                                </div>
+                            </div>
+                            <p class="text-xs text-text-muted leading-relaxed border-t border-black/5 pt-6 font-normal">
+                                Su institución posee sistemas básicos (EHR) pero carece de la interoperabilidad necesaria para IA avanzada. Existe un riesgo medio de estancamiento operativo frente a competidores digitalizados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Columna Derecha: Contexto y Urgencia -->
+                <div class="lg:col-span-8 flex flex-col justify-center animate-fade-in-up" style="animation-delay: 0.1s;">
+                    <h1 class="text-5xl md:text-7xl font-light text-text-main mb-8 leading-tight tracking-tight">
+                        Diagnóstico: <br>
+                        <span class="text-warning font-normal">Potencial Latente.</span>
+                    </h1>
+                    <p class="text-xl font-light text-text-muted leading-relaxed max-w-2xl mb-12">
+                        Los datos indican que su organización opera en silos funcionales. Tiene la materia prima (datos), pero no la infraestructura para convertirlos en decisiones. La brecha principal es de <strong class="text-text-main font-medium border-b border-black/20 pb-0.5">gobernanza y arquitectura de datos</strong>.
+                    </p>
+                   
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="border-l-2 border-black/10 pl-5">
+                            <span class="block text-2xl text-text-main font-light mb-1">Riesgo</span>
+                            <span class="text-xs text-text-muted font-bold uppercase tracking-wide">Pérdida de Eficiencia</span>
+                        </div>
+                        <div class="border-l-2 border-black/10 pl-5">
+                            <span class="block text-2xl text-text-main font-light mb-1">Urgencia</span>
+                            <span class="text-xs text-text-muted font-bold uppercase tracking-wide">Media-Alta (6 meses)</span>
+                        </div>
+                        <div class="border-l-2 border-black/10 pl-5">
+                            <span class="block text-2xl text-text-main font-light mb-1">Acción</span>
+                            <span class="text-xs text-text-muted font-bold uppercase tracking-wide">Intervención Estratégica</span>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 2. LA SOLUCIÓN (Potenciamiento + Roadmap) -->
+    <section class="py-32 bg-void border-b border-border-dim relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+           
+            <div class="grid lg:grid-cols-12 gap-16 mb-24">
+                <div class="lg:col-span-5 reveal">
+                    <span class="text-neon-dark font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block">Propuesta de Valor</span>
+                    <h2 class="text-4xl md:text-6xl font-light text-text-main mb-6 leading-tight tracking-tight">
+                        Potencie su Institución con <br>
+                        <span class="text-neon-dark font-normal">Inteligencia Artificial</span>
+                    </h2>
+                </div>
+                <div class="lg:col-span-7 reveal flex flex-col justify-center">
+                    <p class="text-lg text-text-muted font-light leading-relaxed mb-8 border-l-4 border-neon pl-8">
+                        Con nuestro programa ejecutivo, su clínica no solo adoptará tecnología; transformará su modelo operativo. Implemente sistemas que predicen la demanda, optimizan recursos críticos y mejoran la precisión diagnóstica.
+                    </p>
+                    <p class="text-sm text-text-muted font-light pl-8">
+                        Pasar del Nivel 2.5 al Nivel 4.0 significa convertir su hospital en un ecosistema inteligente, eficiente y centrado en el paciente.
+                    </p>
+                </div>
+            </div>
+
+
+            <!-- Roadmap Grid -->
+            <div class="reveal">
+                <div class="flex justify-between items-end mb-10 border-b border-black/5 pb-6">
+                    <h3 class="text-xl font-medium text-text-main">Hoja de Ruta de Transformación (8 Semanas)</h3>
+                </div>
+
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Fila 1 -->
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 01</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Gobernanza de Datos</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Estructuración de datos y ética.</p>
+                        </div>
+                    </div>
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 02</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Clinical NLP</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Historias Clínicas Inteligentes.</p>
+                        </div>
+                    </div>
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 03</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Visión Computacional</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Diagnóstico por Imagen.</p>
+                        </div>
+                    </div>
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 04</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Predicción Operativa</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Gestión de Camas y Triaje.</p>
+                        </div>
+                    </div>
+                    <!-- Fila 2 -->
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 05</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">IoT Médico</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Monitoreo Remoto.</p>
+                        </div>
+                    </div>
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 06</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Automatización RPA</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Eficiencia Administrativa.</p>
+                        </div>
+                    </div>
+                    <div class="step-card p-8 h-48 flex flex-col justify-between rounded-xl hover:shadow-lg">
+                        <span class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest">Semana 07</span>
+                        <div>
+                            <h4 class="text-text-main font-bold text-lg mb-2">Ciberseguridad</h4>
+                            <p class="text-xs text-text-muted leading-relaxed">Protección del Paciente.</p>
+                        </div>
+                    </div>
+                    <div class="bg-black text-white p-8 h-48 flex flex-col justify-between rounded-xl shadow-2xl relative overflow-hidden group transition-all hover:-translate-y-1">
+                         <div class="absolute inset-0 bg-neon opacity-10 group-hover:opacity-20 transition-opacity"></div>
+                        <span class="text-neon font-bold text-[10px] block uppercase tracking-widest">Semana 08 // META</span>
+                        <div class="relative z-10">
+                            <h4 class="text-white font-bold text-lg mb-2">Proyecto MVP</h4>
+                            <p class="text-xs text-gray-400 leading-relaxed">Implementación Real.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 3. LA EXPERTA + VIDEO (Clean Split) -->
+    <section class="py-32 bg-surface border-b border-border-dim">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-20 items-start reveal">
+               
+                <!-- Columna Izquierda: Perfil -->
+                <div>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 block">Validación Académica</span>
+                    <h2 class="text-4xl font-light text-text-main mb-12 tracking-tight">Dirección del Programa</h2>
+                   
+                    <div class="flex gap-8 mb-10 items-start">
+                        <div class="w-32 h-40 relative flex-shrink-0 bg-white border border-black/5 shadow-lg rounded-sm overflow-hidden">
+                            <img src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/e627f8e7982907ed650e22e58e919309.png"
+                                 alt="Elisa Martin"
+                                 class="w-full h-full object-cover filter grayscale contrast-110">
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-normal text-text-main mb-2">Elisa Martin</h3>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-4">IBM Health Ecosystem Director</p>
+                            <p class="text-sm text-text-muted font-light leading-relaxed">
+                                Miembro distinguido de la <strong>IBM Academy of Technology</strong> y Top 100 Mujeres Líderes. Elisa supervisará personalmente la estrategia de implementación en su institución.
+                            </p>
+                        </div>
+                    </div>
+
+
+                    <blockquote class="border-l-2 border-black/10 pl-8 py-4 italic">
+                        <p class="text-xl text-text-main font-light leading-relaxed">
+                            "No se trata de comprar tecnología, se trata de rediseñar el modelo de atención para que sea sostenible, predictivo y humano."
+                        </p>
+                    </blockquote>
+                </div>
+
+
+                <!-- Columna Derecha: Video -->
+                <div class="flex flex-col justify-center h-full">
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-6 block text-right">Visión del Programa</span>
+                    <div class="relative w-full aspect-video bg-black border border-black/5 group overflow-hidden shadow-2xl rounded-xl">
+                        <iframe src="https://player.vimeo.com/video/1127557132?title=0&byline=0&portrait=0"
+                                class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                                frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 4. CTA: AGENDA (ÚNICO LLAMADO) -->
+    <section id="cta" class="py-40 bg-void relative overflow-hidden border-t border-black/5">
+        <div class="absolute inset-0 bg-grid-fixed opacity-40 pointer-events-none"></div>
+       
+        <div class="max-w-xl mx-auto text-center px-6 relative z-10 reveal">
+            <h2 class="text-5xl font-light text-text-main mb-8 tracking-tight">El Tiempo es Crítico</h2>
+            <p class="text-text-muted text-lg leading-relaxed mb-12 font-light">
+                Su diagnóstico indica una oportunidad clara de mejora. Hable con un consultor senior para trazar su plan de acción personalizado.
+            </p>
+           
+            <a href="#" class="inline-block px-12 py-6 btn-black font-bold text-xs uppercase tracking-[0.2em] rounded-sm shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">
+                Agendar Cita Ahora
+            </a>
+           
+            <p class="mt-10 text-[10px] text-text-muted font-bold uppercase tracking-widest">Sin compromiso • Asesoría de 30 min</p>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="bg-surface border-t border-border-dim py-16 px-6 text-center">
+        <div class="max-w-7xl mx-auto">
+             <img src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png" alt="Unifranz Logo" class="h-6 w-auto mx-auto mb-8 opacity-50 grayscale">
+            <p class="text-[10px] text-text-muted font-bold uppercase tracking-widest">
+                © 2026 Unifranz Executive Education. Health Intelligence Unit.
+            </p>
+        </div>
+    </footer>
+
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
+
+
