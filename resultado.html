@@ -52,7 +52,6 @@
     </script>
 
     <style>
-      /* ... exactamente igual que en ambos códigos ... */
       body {
         background-color: #ffffff;
         color: #18181b;
@@ -60,6 +59,7 @@
         font-weight: 300;
         overflow-x: hidden;
       }
+
       .reveal {
         opacity: 0;
         transform: translateY(20px);
@@ -69,12 +69,105 @@
         opacity: 1;
         transform: translateY(0);
       }
-      /* resto de estilos sin cambios */
+
+      .tech-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s ease;
+      }
+      .tech-card:hover {
+        border-color: rgba(3, 228, 162, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .bg-grid-fixed {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      }
+
+      .step-card {
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: #ffffff;
+      }
+      .step-card:hover {
+        border-color: #03e4a2;
+        background: #f0fdf9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(3, 228, 162, 0.1);
+      }
+
+      .btn-black {
+        background-color: #000;
+        color: #fff;
+        transition: all 0.3s ease;
+      }
+      .btn-black:hover {
+        background-color: #03e4a2;
+        color: #000;
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 14px;
+        width: 14px;
+        border-radius: 50%;
+        background: #000;
+        cursor: pointer;
+        margin-top: -5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 2px;
+      }
+      input[type="range"]:focus {
+        outline: none;
+      }
+
+      .custom-list li {
+        position: relative;
+        padding-left: 1.5em;
+        margin-bottom: 0.8em;
+      }
+      .custom-list li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #03e4a2;
+        font-weight: bold;
+        font-size: 14px;
+        top: 5px;
+      }
+
+      .progress-ring__circle {
+        transition:
+          stroke-dashoffset 1s ease-in-out,
+          stroke 0.3s ease;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+
+      ::selection {
+        background: #03e4a2;
+        color: white;
+      }
     </style>
   </head>
+
   <body class="antialiased bg-void text-text-main font-sans">
-    <!-- CONTROL NOTA (solo visible en desktop como en v2) -->
-    <div
+    <!-- CONTROL NOTA (solo desktop) -->
+    <!-- <div
       id="debug-panel"
       class="fixed bottom-6 right-6 z-[100] hidden md:flex items-center gap-4 bg-white/90 backdrop-blur border border-black/10 px-6 py-3 rounded-sm shadow-2xl transition-all hover:border-black/20"
     >
@@ -95,9 +188,9 @@
         class="font-mono text-sm font-bold text-text-main w-6 text-center"
         >9</span
       >
-    </div>
+    </div> -->
 
-    <!-- TOP BAR (sin cambios relevantes) -->
+    <!-- TOP BAR -->
     <header
       class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-border-dim shadow-sm transition-all duration-300"
     >
@@ -130,15 +223,13 @@
         <a
           href="#cta"
           class="hidden md:inline-block text-[10px] font-bold uppercase tracking-widest text-text-main border border-black/10 px-6 py-3 hover:bg-black hover:text-white transition-colors rounded-sm"
+          >Agendar Sesión</a
         >
-          Agendar Sesión
-        </a>
         <a
           href="#cta"
           class="md:hidden text-xs font-bold uppercase tracking-widest border border-black/10 px-4 py-2 rounded-sm"
+          >Agendar</a
         >
-          Agendar
-        </a>
       </div>
     </header>
 
@@ -152,7 +243,7 @@
 
       <div class="max-w-7xl mx-auto relative z-10">
         <div class="grid lg:grid-cols-12 gap-8 items-stretch">
-          <!-- Columna Izquierda: Gauge -->
+          <!-- Gauge -->
           <div class="lg:col-span-4 animate-fade-in-up flex">
             <div
               class="tech-card w-full p-6 md:p-10 flex flex-col justify-between items-center relative overflow-hidden rounded-sm bg-white min-h-[500px] md:min-h-[600px]"
@@ -196,6 +287,7 @@
                       stroke-dashoffset="440"
                     ></circle>
                   </svg>
+
                   <div
                     class="absolute inset-0 flex flex-col items-center justify-center"
                   >
@@ -245,7 +337,7 @@
             </div>
           </div>
 
-          <!-- Columna Derecha -->
+          <!-- Interpretación -->
           <div
             class="lg:col-span-8 flex flex-col gap-6 animate-fade-in-up"
             style="animation-delay: 0.1s"
@@ -289,7 +381,6 @@
               </p>
             </div>
 
-            <!-- Grid interpretación (sin cambios) -->
             <div class="grid md:grid-cols-2 gap-6 md:gap-8 mb-2">
               <div
                 class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
@@ -309,6 +400,7 @@
                   ...
                 </p>
               </div>
+
               <div
                 class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
               >
@@ -329,7 +421,6 @@
               </div>
             </div>
 
-            <!-- Proyecto recomendado (sin cambios estructurales) -->
             <div
               id="project-block"
               class="tech-card p-6 md:p-10 rounded-sm mt-auto transition-colors duration-500 bg-white border border-border-dim"
@@ -361,6 +452,7 @@
                     </p>
                   </div>
                 </div>
+
                 <div
                   class="flex flex-col justify-start pl-0 md:pl-2 border-t md:border-t-0 border-border-dim pt-6 md:pt-0"
                 >
@@ -380,7 +472,7 @@
       </div>
     </section>
 
-    <!-- ROADMAP (cambio de título) -->
+    <!-- 2. ROADMAP -->
     <section
       class="py-20 md:py-32 bg-void border-b border-border-dim relative overflow-hidden"
     >
@@ -409,7 +501,6 @@
           </div>
         </div>
 
-        <!-- Grid de semanas (sin cambios) -->
         <div class="reveal">
           <div
             class="flex justify-between items-end mb-8 md:mb-10 border-b border-black/5 pb-6"
@@ -418,19 +509,264 @@
               Hoja de Ruta de Transformación (8 Semanas)
             </h3>
           </div>
+
           <div
             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
           >
-            <!-- ... las 8 tarjetas de semanas iguales en ambos ... -->
-            <!-- Mantengo exactamente igual el contenido de las semanas -->
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 01</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">
+                  Gobernanza
+                </h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Estructuración y ética.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 02</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">
+                  Clinical NLP
+                </h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Historias Clínicas.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 03</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">
+                  Visión Comp.
+                </h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Diagnóstico por Imagen.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 04</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">
+                  Predicción
+                </h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Gestión de recursos.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 05</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">
+                  IoT Médico
+                </h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Monitoreo Remoto.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 06</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">RPA Admin</h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Automatización.
+                </p>
+              </div>
+            </div>
+            <div
+              class="step-card p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm hover:shadow-lg gap-4 md:gap-0"
+            >
+              <span
+                class="text-neon-dark font-bold text-[10px] block opacity-80 uppercase tracking-widest"
+                >Semana 07</span
+              >
+              <div>
+                <h4 class="text-text-main font-bold text-lg mb-2">Seguridad</h4>
+                <p class="text-xs text-text-muted leading-relaxed">
+                  Protección de Datos.
+                </p>
+              </div>
+            </div>
+            <div
+              class="bg-black text-white p-6 h-auto md:h-48 flex flex-col justify-between rounded-sm shadow-2xl relative overflow-hidden group transition-all hover:-translate-y-1 gap-4 md:gap-0"
+            >
+              <div
+                class="absolute inset-0 bg-neon opacity-10 group-hover:opacity-20 transition-opacity"
+              ></div>
+              <span
+                class="text-neon font-bold text-[10px] block uppercase tracking-widest"
+                >Semana 08 // META</span
+              >
+              <div class="relative z-10">
+                <h4 class="text-white font-bold text-lg mb-2">Proyecto MVP</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                  Implementación Real.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Secciones LA EXPERTA, CTA y FOOTER sin cambios relevantes -->
+    <!-- 3. LA EXPERTA -->
+    <section class="py-20 md:py-32 bg-surface border-b border-border-dim">
+      <div class="max-w-7xl mx-auto px-4 md:px-6">
+        <div class="grid lg:grid-cols-2 gap-12 md:gap-20 items-start reveal">
+          <div>
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 block"
+              >Validación Académica</span
+            >
+            <h2
+              class="text-3xl md:text-4xl font-light text-text-main mb-8 md:mb-12 tracking-tight"
+            >
+              Dirección del Programa
+            </h2>
+            <div class="flex gap-6 md:gap-8 mb-8 md:mb-10 items-start">
+              <div
+                class="w-24 md:w-32 h-32 md:h-40 relative flex-shrink-0 bg-white border border-black/5 shadow-lg rounded-sm overflow-hidden"
+              >
+                <img
+                  src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/e627f8e7982907ed650e22e58e919309.png"
+                  class="w-full h-full object-cover filter grayscale contrast-110"
+                />
+              </div>
+              <div>
+                <h3 class="text-xl md:text-2xl font-normal text-text-main mb-2">
+                  Elisa Martin
+                </h3>
+                <p
+                  class="text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-4"
+                >
+                  IBM Health Ecosystem Director
+                </p>
+                <p class="text-sm text-text-muted font-light leading-relaxed">
+                  Miembro distinguido de la
+                  <strong>IBM Academy of Technology</strong> y Top 100 Mujeres
+                  Líderes.
+                </p>
+              </div>
+            </div>
+            <blockquote
+              class="border-l-2 border-black/10 pl-6 md:pl-8 py-4 italic"
+            >
+              <p
+                class="text-lg md:text-xl text-text-main font-light leading-relaxed"
+              >
+                "No se trata de comprar tecnología, se trata de rediseñar el
+                modelo de atención."
+              </p>
+            </blockquote>
+          </div>
+          <div class="flex flex-col justify-center h-full">
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-6 block text-right"
+              >Visión del Programa</span
+            >
+            <div
+              class="relative w-full aspect-video bg-black border border-black/5 group overflow-hidden shadow-2xl rounded-sm"
+            >
+              <iframe
+                src="https://player.vimeo.com/video/1127557132?title=0&byline=0&portrait=0"
+                class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-700"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- LÓGICA DINÁMICA (con los nuevos levels de la v2) -->
+    <!-- 4. CTA -->
+    <section
+      id="cta"
+      class="py-24 md:py-40 bg-void relative overflow-hidden border-t border-black/5"
+    >
+      <div
+        class="absolute inset-0 bg-grid-fixed opacity-40 pointer-events-none"
+      ></div>
+      <div class="max-w-xl mx-auto text-center px-6 relative z-10 reveal">
+        <h2
+          class="text-4xl md:text-5xl font-light text-text-main mb-6 md:mb-8 tracking-tight"
+        >
+          El Tiempo es Crítico
+        </h2>
+        <p
+          class="text-text-muted text-base md:text-lg leading-relaxed mb-10 md:mb-12 font-light"
+        >
+          Su diagnóstico indica una oportunidad clara de mejora. Hable con un
+          consultor senior.
+        </p>
+        <a
+          href="#"
+          class="inline-block px-10 md:px-12 py-5 md:py-6 btn-black font-bold text-xs uppercase tracking-[0.2em] rounded-sm shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+        >
+          Agendar Cita Ahora
+        </a>
+        <p
+          class="mt-8 md:mt-10 text-[10px] text-text-muted font-bold uppercase tracking-widest"
+        >
+          Sin compromiso • Asesoría de 30 min
+        </p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer
+      class="bg-surface border-t border-border-dim py-12 md:py-16 px-6 text-center"
+    >
+      <div class="max-w-7xl mx-auto">
+        <img
+          src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
+          alt="Unifranz Logo"
+          class="h-6 w-auto mx-auto mb-6 md:mb-8 opacity-50 grayscale"
+        />
+        <p
+          class="text-[10px] text-text-muted font-bold uppercase tracking-widest"
+        >
+          © 2026 Unifranz Executive Education. Health Intelligence Unit.
+        </p>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
     <script>
       const levels = {
         inicial: {
@@ -563,7 +899,6 @@
 
       function updateDashboard(score) {
         let data = null;
-
         if (score <= 9) data = levels.inicial;
         else if (score <= 14) data = levels.basico;
         else if (score <= 18) data = levels.intermedio;
@@ -620,7 +955,7 @@
           if (data.name && ui.userName && ui.userGreeting) {
             ui.userName.innerText = data.name;
             ui.userGreeting.classList.remove("hidden");
-            ui.defaultGreeting.classList.add("hidden");
+            if (ui.defaultGreeting) ui.defaultGreeting.classList.add("hidden");
           }
 
           updateDashboard(totalScore);
@@ -641,18 +976,21 @@
         });
       }
 
-      // Init
+      // Inicialización
       const hasData = loadDataFromStorage();
       if (!hasData) {
-        document.getElementById("debug-panel")?.classList.remove("hidden");
+        const debugPanel = document.getElementById("debug-panel");
+        if (debugPanel) debugPanel.classList.remove("hidden");
         updateDashboard(9);
       }
 
-      // Scroll reveal
+      // Animaciones al scroll
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add("active");
+            if (entry.isIntersecting) {
+              entry.target.classList.add("active");
+            }
           });
         },
         { threshold: 0.1 },
