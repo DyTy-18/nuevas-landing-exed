@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unifranz EXED | Health Intelligence</title>
+    <title>Unifranz EXED | Reporte Estratégico</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:wght@100;300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
     />
 
@@ -17,23 +17,51 @@
         theme: {
           extend: {
             colors: {
-              "ibm-black": "#121212",
-              "clinical-teal": "#0ee19f",
-              "clinical-teal-dark": "#00b67a",
-              "custom-blue": "#71dade" /* Nuevo color agregado */,
-              "light-gray": "#f4f4f4",
-              "subtle-gray": "#f8fafc",
-              "border-gray": "#e2e8f0",
+              // PALETA PRINCIPAL
+              neon: "#71dade",
+              "neon-dark": "#0097a7",
+
+              // ESCALA DE MADUREZ (TURQUESAS)
+              "level-1": "#e0f7fa",
+              "level-2": "#b2ebf2",
+              "level-3": "#71dade",
+              "level-4": "#4cb5c5",
+              "level-5": "#0097a7",
+
+              // COLORES ESPECIFICOS SECCION EXPERTA (DARK)
+              "expert-neon": "#16dd95",
+              "expert-dark": "#131313",
+
+              warning: "#ff9f2a",
+              danger: "#ff4b4b",
+              void: "#ffffff",
+              surface: "#f8f9fa",
+              "surface-hover": "#f0f2f5",
+              "border-dim": "rgba(0, 0, 0, 0.08)",
+              "border-strong": "#e5e7eb",
+              "text-main": "#18181b",
+              "text-muted": "#52525b",
+              "brand-blue": "#2563eb",
+              "brand-green": "#16a34a",
+              "brand-red": "#dc2626",
             },
             fontFamily: {
               sans: ['"Archivo"', "sans-serif"],
+              mono: ['"Archivo"', "monospace"],
             },
             backgroundImage: {
-              "hero-medical":
-                "url('https://static.tecnichenuove.it/tecnicaospedaliera/2023/09/AdobeStock_641478768-scaled.jpeg')",
+              "grid-subtle":
+                "linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)",
             },
-            boxShadow: {
-              "soft-xl": "0 20px 40px -10px rgba(0, 0, 0, 0.05)",
+            animation: {
+              "fade-in-up":
+                "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+            },
+            keyframes: {
+              fadeInUp: {
+                "0%": { opacity: 0, transform: "translateY(20px)" },
+                "100%": { opacity: 1, transform: "translateY(0)" },
+              },
             },
           },
         },
@@ -43,743 +71,513 @@
     <style>
       body {
         background-color: #ffffff;
-        color: #121212;
+        color: #18181b;
         font-family: "Archivo", sans-serif;
         font-weight: 300;
+        overflow-x: hidden;
       }
-
-      .hero-overlay {
-        background: linear-gradient(
-          90deg,
-          #ffffff 15%,
-          rgba(255, 255, 255, 0.92) 50%,
-          rgba(255, 255, 255, 0.1) 100%
-        );
-      }
-
-      /* Estilos Ecualizador */
-      .eq-track-container {
-        position: relative;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        width: 100%;
-      }
-      .eq-track-bg {
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background: #e5e7eb;
-        border-radius: 99px;
-      }
-      .eq-fill {
-        position: absolute;
-        left: 0;
-        height: 4px;
-        background: #121212;
-        transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-        z-index: 1;
-        border-radius: 99px;
-      }
-      .eq-node {
-        width: 16px;
-        height: 16px;
-        background: #ffffff;
-        border: 2px solid #d1d5db;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 2;
-        transition: all 0.2s ease;
-        border-radius: 50%;
-      }
-      /* Hover suave en los nodos */
-      .group:hover .eq-node {
-        border-color: #9ca3af;
-      }
-
-      .eq-node.active {
-        background: #0ee19f;
-        border-color: #0ee19f;
-        transform: translateY(-50%) scale(1.2);
-        box-shadow: 0 0 0 4px rgba(14, 225, 159, 0.2);
-      }
-      /* Posiciones exactas */
-      .n1 {
-        left: 0%;
-      }
-      .n2 {
-        left: 25%;
-      }
-      .n3 {
-        left: 50%;
-      }
-      .n4 {
-        left: 75%;
-      }
-      .n5 {
-        left: 100%;
-        margin-left: -16px;
-      }
-
-      .click-layer {
-        position: absolute;
-        inset: 0;
-        z-index: 10;
-        display: flex;
-      }
-      .click-zone {
-        flex: 1;
-      }
-
       .reveal {
         opacity: 0;
         transform: translateY(20px);
-        transition: all 0.8s ease-out;
+        transition: all 0.8s ease;
       }
-      .reveal.visible {
+      .reveal.active {
         opacity: 1;
         transform: translateY(0);
       }
-
-      .font-tech {
-        font-weight: 100;
-        letter-spacing: 0.15em;
-      }
-
-      /* Estilos para botón deshabilitado */
-      .btn-disabled {
-        background-color: #e5e7eb !important;
-        color: #9ca3af !important;
-        cursor: not-allowed;
-        pointer-events: none;
-      }
-      .desc-box {
+      .tech-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
         transition: all 0.3s ease;
+      }
+      .tech-card:hover {
+        border-color: rgba(113, 218, 222, 0.5); /* #71dade */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+      .bg-grid-fixed {
+        background-size: 40px 40px;
+        background-image:
+          linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+      }
+      .btn-black {
+        background-color: #000;
+        color: #fff;
+        transition: all 0.3s ease;
+      }
+      .btn-black:hover {
+        background-color: #71dade; /* Updated Hover */
+        color: #000;
+      }
+      input[type="range"] {
+        -webkit-appearance: none;
+        background: transparent;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        height: 14px;
+        width: 14px;
+        border-radius: 50%;
+        background: #000;
+        cursor: pointer;
+        margin-top: -5px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+      }
+      input[type="range"]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 4px;
+        cursor: pointer;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 2px;
+      }
+      input[type="range"]:focus {
+        outline: none;
+      }
+      .custom-list li {
+        position: relative;
+        padding-left: 1.5em;
+        margin-bottom: 0.8em;
+      }
+      .custom-list li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: #71dade; /* Updated Color */
+        font-weight: bold;
+        font-size: 14px;
+        top: 5px;
+      }
+      .progress-ring__circle {
+        transition:
+          stroke-dashoffset 1s ease-in-out,
+          stroke 0.3s ease;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+      ::selection {
+        background: #71dade; /* Updated Selection */
+        color: black;
+      }
+
+      /* --- Estilos para SECCIÓN INFO ACADÉMICA (Ficha Técnica Limpia) --- */
+      .info-grid-item-clean {
+        position: relative;
+      }
+      .info-grid-item-clean:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 10%;
+        height: 80%;
+        width: 1px;
+        background-color: rgba(0, 0, 0, 0.08);
+        display: none;
+      }
+      @media (min-width: 768px) {
+        .info-grid-item-clean:not(:last-child)::after {
+          display: block;
+        }
+      }
+
+      /* --- Estilos para SECCIÓN CARRUSEL --- */
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+
+      .nav-btn {
+        transition: all 0.2s ease;
+      }
+      .nav-btn:hover {
+        background-color: #18181b;
+        color: #71dade;
+        border-color: #18181b;
+      }
+      .nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        background-color: transparent;
+        color: #ccc;
+        border-color: #eee;
+      }
+
+      .indicator-tab {
+        transition: all 0.3s ease;
+        position: relative;
+      }
+      .indicator-tab::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: #71dade;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+      .indicator-tab.active {
+        color: #18181b;
+        font-weight: 600;
+        background-color: rgba(113, 218, 222, 0.1);
+      }
+      .indicator-tab.active::after {
+        transform: scaleX(1);
+      }
+
+      /* --- Estilos para SECCIÓN SEGMENTOS (Grid Colapsado) --- */
+      .collapsed-grid {
+        display: grid;
+        background-color: #e5e7eb;
+        gap: 1px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .data-card {
+        background-color: #ffffff;
+        transition: all 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        z-index: 1;
+      }
+      /* Usa el color Neon/Turquesa principal */
+      .data-card:hover {
+        z-index: 10;
+        box-shadow: 0 0 0 2px #71dade;
+      }
+
+      .card-divider {
+        border-bottom: 1px solid #f3f4f6;
+      }
+
+      .metric-box {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 0 !important;
+        transition: background-color 0.2s;
+      }
+      .data-card:hover .metric-box {
+        background-color: #ffffff;
+        border-color: #d1d5db;
+      }
+
+      /* --- Estilos para SECCIÓN EXPERTA (Dark Mode) --- */
+      .modal-enter {
+        opacity: 0;
+        transform: scale(0.95);
+        transition: all 0.3s ease;
+      }
+      .modal-enter-active {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .dots-bg {
+        background-image: radial-gradient(#16dd95 1.5px, transparent 1.5px);
+        background-size: 32px 32px;
+        opacity: 0.15;
+      }
+
+      .thumb-play-overlay {
+        background: rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+      }
+      .group:hover .thumb-play-overlay {
+        background: rgba(22, 221, 149, 0.1);
+      }
+
+      .thumb-icon {
+        transform: scale(1);
+        transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+      .group:hover .thumb-icon {
+        transform: scale(1.1);
+        background-color: #16dd95;
+        color: #000;
+        border-color: #16dd95;
+      }
+
+      /* Clases de utilidad forzadas */
+      .no-radius {
+        border-radius: 0 !important;
       }
     </style>
   </head>
-  <body class="antialiased">
-    <!-- NAV (Logo Solo) -->
-    <nav
-      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 flex items-center transition-all duration-300"
+  <body class="antialiased bg-void text-text-main font-sans">
+    <!-- TOP BAR -->
+    <header
+      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-border-dim shadow-sm transition-all duration-300"
     >
       <div
-        class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center"
+        class="max-w-7xl mx-auto px-6 h-20 md:h-24 flex justify-between items-center"
       >
         <div class="flex items-center gap-6">
-          <!-- Solo Logo -->
           <img
             src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
-            alt="Unifranz"
-            class="h-10 md:h-12 w-auto object-contain"
+            alt="Unifranz Element Logo"
+            class="h-12 md:h-16 w-auto object-contain transition-all duration-300"
           />
-        </div>
-
-        <a
-          href="#matrix"
-          class="text-[10px] font-bold text-ibm-black tracking-[0.15em] border border-gray-200 px-6 py-2.5 rounded-full hover:bg-ibm-black hover:text-white transition-all uppercase"
-        >
-          Iniciar Diagnóstico
-        </a>
-      </div>
-    </nav>
-
-    <!-- HERO SECTION (Altura Reducida) -->
-    <header
-      class="relative w-full min-h-[85vh] md:min-h-[550px] md:h-[80vh] bg-hero-medical bg-cover bg-center bg-no-repeat mt-20 flex items-start md:items-center"
-    >
-      <div
-        class="absolute inset-0 hero-overlay md:bg-transparent bg-white/95"
-      ></div>
-
-      <div
-        class="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12"
-      >
-        <div class="space-y-6 reveal pt-8 md:pt-0">
-          <div class="flex flex-wrap gap-3">
-            <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
-              >Centros Hospitalarios</span
-            >
-            <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
-              >Asistencia Operativa</span
-            >
-            <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
-              >Centros de Diagnosticos</span
-            >
-          </div>
-
-          <div>
-            <h2
-              class="text-xl md:text-2xl font-light text-gray-500 mb-2 leading-relaxed max-w-md"
-            >
-              Proyectos de Inteligencia Artificial <br />
-              <span class="text-ibm-black font-normal"
-                >para el Sector Salud</span
-              >
-            </h2>
-
-            <h1
-              class="text-5xl md:text-2xl lg:text-5xl font-tech text-ibm-black leading-none tracking-wide -ml-1"
-            >
-              DIAGNOSTICO DE<br />
-              <span class="text-custom-blue font-medium tracking-normal"
-                >MADUREZ DIGITAL</span
-              >
-            </h1>
-          </div>
-
-          <!-- MODIFICADO: Ancho aumentado a max-w-2xl -->
-          <p
-            class="text-sm md:text-base text-gray-500 font-light max-w-2xl leading-relaxed"
+          <div
+            class="hidden md:flex items-center gap-3 border-l border-gray-200 pl-6 h-8"
           >
-            Antes de invertir en Inteligencia Artificial, necesitas saber
-            exactamente por dónde empezar. Esta herramienta te permite realizar
-            un diagnóstico claro y práctico de la madurez digital de tu
-            institución de salud para identificar y priorizar el primer proyecto
-            de IA que realmente genere impacto. <br />
-            Al finalizar, sabrás con precisión qué proyectos de IA implementar
-            primero para mejorar eficiencia, reducir carga operativa y obtener
-            resultados visibles en tus centros hospitalarios, unidades de
-            diagnóstico y redes de atención ambulatoria.
-          </p>
-
-          <div class="pt-2">
-            <a href="#matrix" class="inline-flex items-center gap-4 group">
-              <div
-                class="h-12 w-12 rounded-full bg-ibm-black text-white flex items-center justify-center group-hover:bg-custom-blue transition-colors shadow-lg"
-              >
-                <svg
-                  class="w-4 h-4 group-hover:translate-y-1 transition-transform"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                  ></path>
-                </svg>
-              </div>
-              <span
-                class="text-xs font-bold uppercase tracking-[0.2em] text-ibm-black group-hover:text-custom-blue transition-colors"
-                >Evaluar Institución</span
-              >
-            </a>
+            <div
+              id="status-indicator"
+              class="w-1.5 h-1.5 bg-level-3 rounded-full animate-pulse"
+            ></div>
+            <span
+              class="text-[10px] font-bold uppercase tracking-widest text-text-main"
+              >Reporte Generado</span
+            >
+            <span
+              class="text-[10px] font-medium uppercase tracking-widest text-text-muted"
+              >ID: #AI-2026-X4</span
+            >
           </div>
         </div>
-        <div class="hidden lg:block"></div>
+        <a
+          href="#cta"
+          class="hidden md:inline-block text-[10px] font-bold uppercase tracking-widest text-text-main border border-black/10 px-6 py-3 hover:bg-black hover:text-white transition-colors rounded-sm"
+        >
+          Agendar Sesión
+        </a>
       </div>
     </header>
 
-    <!-- MATRIX SECTION -->
+    <!-- SECCIÓN 01: EL DIAGNÓSTICO -->
     <section
-      id="matrix"
-      class="py-8 md:py-16 bg-subtle-gray border-t border-gray-100"
+      class="pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-6 border-b border-border-dim relative bg-surface"
     >
-      <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12">
-        <!-- MODIFICADO: Header centrado y texto más ancho -->
-        <div
-          class="mb-12 border-b border-gray-200 pb-8 flex flex-col items-center text-center gap-6 reveal"
-        >
-          <div class="w-full">
-            <h2 class="text-3xl md:text-4xl font-light text-ibm-black mb-4">
-              Herramienta de Diagnóstico
-            </h2>
-            <p
-              class="text-sm text-gray-500 font-light max-w-4xl mx-auto leading-relaxed"
-            >
-              Lee cada pregunta con atención y selecciona un único número del 1
-              al 5 en cada caso. Elige la opción que mejor describa cómo
-              funcionan actualmente los procesos en tu institución, no cómo
-              deberían funcionar ni cómo te gustaría que funcionaran en el
-              futuro. Responde considerando la operación real del día a día,
-              incluyendo los sistemas, los datos, las personas y las prácticas
-              vigentes. Este diagnóstico no evalúa el desempeño, sino que
-              permite identificar con claridad el punto de partida para
-              priorizar proyectos de Inteligencia Artificial de alto impacto.
-              Puedes apoyarte en las descripciones y referencias de cada nivel
-              que aparecen en el cuadro lateral para seleccionar la opción que
-              mejor represente la realidad actual de tu institución. Una vez
-              completado el diagnóstico, presiona “Generar informe” para obtener
-              los resultados.
-            </p>
-          </div>
-        </div>
+      <div
+        class="absolute inset-0 bg-grid-fixed pointer-events-none opacity-60"
+      ></div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 reveal">
-          <!-- COLUMNA IZQUIERDA: CONTROLES -->
-          <div
-            class="lg:col-span-8 bg-white border border-gray-200 p-6 md:p-10 shadow-soft-xl rounded-sm"
-          >
-            <div class="flex flex-col gap-10">
-              <!-- 1. Sistemas -->
-              <div class="group" onmouseleave="resetPreview('sys')">
-                <div class="mb-4">
-                  <h4 class="text-xl font-medium text-ibm-black">
-                    Sistemas y Tecnología
-                  </h4>
-                  <p class="text-base text-gray-500 mt-1">
-                    ¿Cómo están conectados hoy los sistemas de tu institución?
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-6">
-                  <div class="flex-grow relative h-10 flex items-center">
-                    <div class="eq-track-container">
-                      <div class="eq-track-bg"></div>
-                      <div
-                        class="eq-fill"
-                        id="fill-sys"
-                        style="width: 0%"
-                      ></div>
-                      <div class="eq-node n1 active" id="node-sys-1"></div>
-                      <div class="eq-node n2" id="node-sys-2"></div>
-                      <div class="eq-node n3" id="node-sys-3"></div>
-                      <div class="eq-node n4" id="node-sys-4"></div>
-                      <div class="eq-node n5" id="node-sys-5"></div>
-
-                      <!-- Capa de Interacción (Hover + Click) -->
-                      <div class="click-layer">
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('sys', 1)"
-                          onclick="setVal('sys', 1)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('sys', 2)"
-                          onclick="setVal('sys', 2)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('sys', 3)"
-                          onclick="setVal('sys', 3)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('sys', 4)"
-                          onclick="setVal('sys', 4)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('sys', 5)"
-                          onclick="setVal('sys', 5)"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-10 text-right">
-                    <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
-                      id="val-sys"
-                      >1</span
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
-                  id="box-sys"
-                >
-                  <p class="text-sm text-ibm-black italic" id="desc-sys">
-                    Los sistemas no se hablan entre sí y mucho se hace a mano.
-                  </p>
-                </div>
-              </div>
-
-              <!-- 2. Datos -->
-              <div class="group" onmouseleave="resetPreview('data')">
-                <div class="mb-4">
-                  <h4 class="text-xl font-medium text-ibm-black">
-                    Datos e Información
-                  </h4>
-                  <p class="text-base text-gray-500 mt-1">
-                    ¿Qué tan confiable es la información con la que trabajan?
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-6">
-                  <div class="flex-grow relative h-10 flex items-center">
-                    <div class="eq-track-container">
-                      <div class="eq-track-bg"></div>
-                      <div
-                        class="eq-fill"
-                        id="fill-data"
-                        style="width: 0%"
-                      ></div>
-                      <div class="eq-node n1 active" id="node-data-1"></div>
-                      <div class="eq-node n2" id="node-data-2"></div>
-                      <div class="eq-node n3" id="node-data-3"></div>
-                      <div class="eq-node n4" id="node-data-4"></div>
-                      <div class="eq-node n5" id="node-data-5"></div>
-
-                      <div class="click-layer">
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('data', 1)"
-                          onclick="setVal('data', 1)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('data', 2)"
-                          onclick="setVal('data', 2)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('data', 3)"
-                          onclick="setVal('data', 3)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('data', 4)"
-                          onclick="setVal('data', 4)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('data', 5)"
-                          onclick="setVal('data', 5)"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-10 text-right">
-                    <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
-                      id="val-data"
-                      >1</span
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
-                  id="box-data"
-                >
-                  <p class="text-sm text-ibm-black italic" id="desc-data">
-                    La información está desordenada, incompleta o duplicada.
-                  </p>
-                </div>
-              </div>
-
-              <!-- 3. Reglas -->
-              <div class="group" onmouseleave="resetPreview('rules')">
-                <div class="mb-4">
-                  <h4 class="text-xl font-medium text-ibm-black">
-                    Reglas y Privacidad
-                  </h4>
-                  <p class="text-base text-gray-500 mt-1">
-                    ¿Cómo se gestionan los datos y la toma de decisiones?
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-6">
-                  <div class="flex-grow relative h-10 flex items-center">
-                    <div class="eq-track-container">
-                      <div class="eq-track-bg"></div>
-                      <div
-                        class="eq-fill"
-                        id="fill-rules"
-                        style="width: 0%"
-                      ></div>
-                      <div class="eq-node n1 active" id="node-rules-1"></div>
-                      <div class="eq-node n2" id="node-rules-2"></div>
-                      <div class="eq-node n3" id="node-rules-3"></div>
-                      <div class="eq-node n4" id="node-rules-4"></div>
-                      <div class="eq-node n5" id="node-rules-5"></div>
-
-                      <div class="click-layer">
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('rules', 1)"
-                          onclick="setVal('rules', 1)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('rules', 2)"
-                          onclick="setVal('rules', 2)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('rules', 3)"
-                          onclick="setVal('rules', 3)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('rules', 4)"
-                          onclick="setVal('rules', 4)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('rules', 5)"
-                          onclick="setVal('rules', 5)"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-10 text-right">
-                    <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
-                      id="val-rules"
-                      >1</span
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
-                  id="box-rules"
-                >
-                  <p class="text-sm text-ibm-black italic" id="desc-rules">
-                    No hay reglas claras sobre uso de datos o responsabilidades.
-                  </p>
-                </div>
-              </div>
-
-              <!-- 4. Personas -->
-              <div class="group" onmouseleave="resetPreview('people')">
-                <div class="mb-4">
-                  <h4 class="text-xl font-medium text-ibm-black">Personas</h4>
-                  <p class="text-base text-gray-500 mt-1">
-                    ¿Con qué tan preparado está el equipo para ejecutar mejoras
-                    con tecnología?
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-6">
-                  <div class="flex-grow relative h-10 flex items-center">
-                    <div class="eq-track-container">
-                      <div class="eq-track-bg"></div>
-                      <div
-                        class="eq-fill"
-                        id="fill-people"
-                        style="width: 0%"
-                      ></div>
-                      <div class="eq-node n1 active" id="node-people-1"></div>
-                      <div class="eq-node n2" id="node-people-2"></div>
-                      <div class="eq-node n3" id="node-people-3"></div>
-                      <div class="eq-node n4" id="node-people-4"></div>
-                      <div class="eq-node n5" id="node-people-5"></div>
-
-                      <div class="click-layer">
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('people', 1)"
-                          onclick="setVal('people', 1)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('people', 2)"
-                          onclick="setVal('people', 2)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('people', 3)"
-                          onclick="setVal('people', 3)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('people', 4)"
-                          onclick="setVal('people', 4)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('people', 5)"
-                          onclick="setVal('people', 5)"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-10 text-right">
-                    <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
-                      id="val-people"
-                      >1</span
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
-                  id="box-people"
-                >
-                  <p class="text-sm text-ibm-black italic" id="desc-people">
-                    No hay personas dedicadas a datos o mejora digital.
-                  </p>
-                </div>
-              </div>
-
-              <!-- 5. Uso -->
-              <div class="group" onmouseleave="resetPreview('use')">
-                <div class="mb-4">
-                  <h4 class="text-xl font-medium text-ibm-black">
-                    Uso real de IA
-                  </h4>
-                  <p class="text-base text-gray-500 mt-1">
-                    ¿Qué tan avanzada está la institución en el uso práctico de
-                    IA?
-                  </p>
-                </div>
-
-                <div class="flex items-center gap-6">
-                  <div class="flex-grow relative h-10 flex items-center">
-                    <div class="eq-track-container">
-                      <div class="eq-track-bg"></div>
-                      <div
-                        class="eq-fill"
-                        id="fill-use"
-                        style="width: 0%"
-                      ></div>
-                      <div class="eq-node n1 active" id="node-use-1"></div>
-                      <div class="eq-node n2" id="node-use-2"></div>
-                      <div class="eq-node n3" id="node-use-3"></div>
-                      <div class="eq-node n4" id="node-use-4"></div>
-                      <div class="eq-node n5" id="node-use-5"></div>
-
-                      <div class="click-layer">
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('use', 1)"
-                          onclick="setVal('use', 1)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('use', 2)"
-                          onclick="setVal('use', 2)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('use', 3)"
-                          onclick="setVal('use', 3)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('use', 4)"
-                          onclick="setVal('use', 4)"
-                        ></div>
-                        <div
-                          class="click-zone"
-                          onmouseenter="previewVal('use', 5)"
-                          onclick="setVal('use', 5)"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="w-10 text-right">
-                    <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
-                      id="val-use"
-                      >1</span
-                    >
-                  </div>
-                </div>
-
-                <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
-                  id="box-use"
-                >
-                  <p class="text-sm text-ibm-black italic" id="desc-use">
-                    No se usa IA; solo se habla del tema.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- COLUMNA DERECHA: SCORE -->
-          <div class="lg:col-span-4 sticky top-4 h-fit">
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+          <!-- Columna Izquierda: Tarjeta de Resultado -->
+          <div class="lg:col-span-4 animate-fade-in-up flex">
             <div
-              class="bg-ibm-black text-white p-6 lg:p-10 shadow-2xl relative overflow-hidden rounded-sm flex flex-col justify-between min-h-0 lg:min-h-[500px]"
+              class="tech-card w-full p-6 md:p-10 flex flex-col justify-between items-center relative overflow-hidden rounded-sm bg-white min-h-[500px] md:min-h-[600px]"
             >
               <div
-                class="absolute inset-0 opacity-10 pointer-events-none"
-                style="
-                  background-image: radial-gradient(
-                    #ffffff 1px,
-                    transparent 1px
-                  );
-                  background-size: 20px 20px;
-                "
+                id="card-glow"
+                class="absolute top-0 right-0 w-64 md:w-80 h-64 md:h-80 bg-level-3/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500"
               ></div>
 
-              <div class="relative z-10 text-center mb-6">
-                <span
-                  class="text-[10px] font-bold uppercase tracking-widest text-clinical-teal"
-                  >RESULTADO GLOBAL</span
-                >
-              </div>
-
-              <!-- SCOREBOARD -->
               <div
-                class="relative z-10 flex flex-col items-center justify-center py-4 lg:py-6"
+                class="relative z-10 w-full text-center flex flex-col items-center flex-1 justify-center"
               >
-                <div class="relative w-40 h-40 lg:w-64 lg:h-64 mb-4 lg:mb-6">
-                  <svg class="w-full h-full -rotate-90" viewBox="0 0 256 256">
+                <span
+                  class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-text-muted block mb-6 md:mb-8"
+                  >Puntaje de Madurez Digital</span
+                >
+
+                <div
+                  class="relative w-48 h-48 md:w-64 md:h-64 mb-6 md:mb-8 transition-all duration-300"
+                >
+                  <svg class="w-full h-full" viewBox="0 0 160 160">
                     <circle
-                      cx="128"
-                      cy="128"
-                      r="110"
-                      stroke="#262626"
+                      cx="80"
+                      cy="80"
+                      r="70"
+                      stroke="#f3f4f6"
                       stroke-width="6"
                       fill="none"
                     ></circle>
                     <circle
                       id="score-circle"
-                      cx="128"
-                      cy="128"
-                      r="110"
-                      stroke="#0ee19f"
-                      stroke-width="10"
+                      class="progress-ring__circle"
+                      cx="80"
+                      cy="80"
+                      r="70"
+                      stroke="#71dade"
+                      stroke-width="6"
                       fill="none"
-                      stroke-dasharray="691"
-                      stroke-dashoffset="691"
-                      class="transition-all duration-700 ease-out"
-                      style="
-                        filter: drop-shadow(0 0 15px rgba(14, 225, 159, 0.5));
-                      "
+                      stroke-linecap="round"
+                      stroke-dasharray="440"
+                      stroke-dashoffset="440"
                     ></circle>
                   </svg>
                   <div
                     class="absolute inset-0 flex flex-col items-center justify-center"
                   >
                     <span
-                      class="text-5xl lg:text-8xl font-thin tracking-tighter"
-                      id="total-score"
-                      >5</span
+                      id="score-main"
+                      class="text-6xl md:text-8xl font-bold text-text-main tracking-tighter leading-none transition-all duration-300"
+                      >0</span
                     >
                     <span
-                      class="text-sm text-gray-500 mt-2 uppercase tracking-widest"
-                      >/ 25 Pts</span
+                      class="text-xs md:text-sm text-text-muted font-light mt-1 border-t border-gray-200 px-3 pt-1"
+                      >/ 25</span
                     >
                   </div>
                 </div>
-                <h3
-                  class="text-lg lg:text-xl uppercase tracking-[0.15em] text-clinical-teal font-bold mb-2 lg:mb-3 text-center"
-                  id="result-category"
+                <div
+                  id="level-badge"
+                  class="inline-block px-5 py-2 md:px-6 md:py-3 bg-level-3/10 text-level-5 text-[10px] md:text-xs font-bold uppercase tracking-widest border border-level-3/20 rounded-sm transition-colors duration-300"
                 >
-                  NIVEL INICIAL
-                </h3>
+                  Calculando...
+                </div>
+              </div>
+              <div
+                class="w-full space-y-4 mt-auto relative z-10 pt-6 border-t border-black/5"
+              >
+                <div
+                  id="alert-box"
+                  class="hidden items-center justify-center gap-2 bg-red-50 border border-red-100 p-2 rounded-sm"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"
+                  ></span>
+                  <span
+                    class="text-[9px] font-bold text-red-600 uppercase tracking-wide"
+                    >Atención Requerida</span
+                  >
+                </div>
                 <p
-                  class="text-xs lg:text-sm text-gray-300 text-center max-w-[280px] leading-relaxed font-light"
-                  id="result-action"
+                  class="text-xs md:text-sm text-text-muted text-center leading-relaxed font-normal px-2"
                 >
-                  Primero hay que ordenar la base
+                  El puntaje refleja la capacidad actual de su
+                  <strong>Diagnóstico de Madurez Digital</strong> para soportar
+                  proyectos de IA en salud.
                 </p>
               </div>
+            </div>
+          </div>
 
-              <div class="relative z-10 mt-6">
-                <button
-                  onclick="openModal()"
-                  class="w-full py-4 bg-white text-ibm-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-clinical-teal hover:text-ibm-black transition-colors flex items-center justify-center gap-3"
+          <!-- Columna Derecha: Interpretación y Proyecto -->
+          <div
+            class="lg:col-span-8 flex flex-col gap-6 animate-fade-in-up"
+            style="animation-delay: 0.1s"
+          >
+            <div
+              class="flex flex-col justify-end pb-6 border-b border-black/5 min-h-[auto] md:min-h-[160px]"
+            >
+              <div class="mb-3">
+                <span
+                  class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1 block"
+                  >Diagnóstico Ejecutivo</span
                 >
-                  <span>GENERAR INFORME</span>
-                </button>
+                <span
+                  id="user-greeting"
+                  class="text-base md:text-lg font-medium text-text-main block hidden"
+                >
+                  Preparado para: <span id="user-name"></span>
+                </span>
+                <span
+                  id="default-greeting"
+                  class="text-base md:text-lg font-medium text-text-main block"
+                >
+                  Preparado para: Oscar Agreda
+                </span>
+              </div>
+              <h1
+                class="text-3xl md:text-5xl lg:text-6xl font-light text-text-main mb-4 leading-tight tracking-tight"
+              >
+                <span
+                  id="level-title"
+                  class="block transition-colors duration-300"
+                  >...</span
+                >
+              </h1>
+              <p
+                id="level-quote"
+                class="text-lg md:text-2xl font-light text-text-muted leading-snug max-w-4xl italic transition-all duration-300"
+              >
+                "..."
+              </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 md:gap-8 mb-2">
+              <div
+                class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
+              >
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="h-px w-6 bg-black/20"></div>
+                  <h4
+                    class="text-[10px] font-bold uppercase tracking-widest text-text-main"
+                  >
+                    ¿Qué significa?
+                  </h4>
+                </div>
+                <p
+                  id="level-desc"
+                  class="text-sm md:text-base font-light text-text-muted leading-relaxed"
+                >
+                  ...
+                </p>
+              </div>
+              <div
+                class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
+              >
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="h-px w-6 bg-black"></div>
+                  <h4
+                    class="text-[10px] font-bold uppercase tracking-widest text-text-main"
+                  >
+                    Tu Enfoque Ahora
+                  </h4>
+                </div>
+                <p
+                  id="level-focus"
+                  class="text-sm md:text-base font-medium text-text-main leading-relaxed"
+                >
+                  ...
+                </p>
+              </div>
+            </div>
+
+            <!-- Proyecto Recomendado 1x2 -->
+            <div
+              id="project-block"
+              class="tech-card p-6 md:p-10 rounded-sm mt-auto transition-colors duration-500 bg-white border border-border-dim"
+            >
+              <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch">
+                <div
+                  class="flex flex-col justify-start border-r-0 md:border-r border-border-dim md:pr-12"
+                >
+                  <span
+                    class="text-[10px] uppercase tracking-widest text-text-main font-bold block mb-4 border-b border-black/5 pb-2"
+                  >
+                    Proyecto General a Implementar
+                  </span>
+                  <h3
+                    id="project-title"
+                    class="text-xl md:text-2xl font-bold text-text-main leading-snug mb-4"
+                  >
+                    ...
+                  </h3>
+                  <div class="mt-auto pt-4">
+                    <span
+                      class="text-[10px] uppercase tracking-widest text-text-muted block mb-2"
+                      >Impacto Esperado:</span
+                    >
+                    <p
+                      id="project-outcome"
+                      class="text-xs md:text-sm font-bold text-text-main uppercase tracking-wide"
+                    >
+                      ...
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex flex-col justify-start pl-0 md:pl-2 border-t md:border-t-0 border-border-dim pt-6 md:pt-0"
+                >
+                  <span
+                    class="text-[10px] uppercase tracking-widest text-text-muted block mb-4 font-bold opacity-70"
+                  >
+                    Otros Proyectos Sugeridos:
+                  </span>
+                  <ul
+                    id="project-list"
+                    class="text-sm md:text-base text-text-main font-light leading-relaxed custom-list space-y-3"
+                  ></ul>
+                </div>
               </div>
             </div>
           </div>
@@ -787,83 +585,1337 @@
       </div>
     </section>
 
-    <!-- MODAL -->
-    <div
-      id="leadModal"
-      class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4"
+    <!-- SECCIÓN 02: BARRA DE INFORMACIÓN ACADÉMICA -->
+    <section class="bg-white border-y border-gray-100 py-12 md:py-16 relative">
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <!-- Header con borde sutil inferior -->
+        <div
+          class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 pb-8 border-b border-gray-100"
+        >
+          <h3
+            class="text-sm md:text-base font-bold uppercase tracking-[0.15em] text-neon-dark"
+          >
+            Pasa del diagnóstico a la implementación real
+          </h3>
+          <a
+            href="#cta"
+            class="hidden md:inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-text-main hover:text-neon-dark transition-colors group bg-gray-50 px-6 py-3 rounded-sm border border-gray-100 hover:border-neon-dark"
+          >
+            Inscribirse ahora
+            <svg
+              class="w-4 h-4 transform group-hover:translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              ></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Grid Limpio -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-y-10 gap-x-8">
+          <!-- Item 1 -->
+          <div
+            class="relative pl-4 border-l-2 border-neon-dark/30 hover:border-neon-dark transition-colors"
+          >
+            <span
+              class="block text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-2"
+              >Próxima Fecha</span
+            >
+            <p
+              class="text-sm md:text-base font-medium text-text-main leading-tight"
+            >
+              Del 28 de enero al 17 de marzo
+            </p>
+          </div>
+          <!-- Item 2 -->
+          <div
+            class="relative pl-4 border-l-2 border-neon-dark/30 hover:border-neon-dark transition-colors"
+          >
+            <span
+              class="block text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-2"
+              >Formato</span
+            >
+            <p
+              class="text-sm md:text-base font-medium text-text-main leading-tight"
+            >
+              100% online, a tu propio ritmo
+            </p>
+          </div>
+          <!-- Item 3 -->
+          <div
+            class="relative pl-4 border-l-2 border-neon-dark/30 hover:border-neon-dark transition-colors"
+          >
+            <span
+              class="block text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-2"
+              >Duración</span
+            >
+            <p
+              class="text-sm md:text-base font-medium text-text-main leading-tight"
+            >
+              8 semanas
+            </p>
+          </div>
+          <!-- Item 4 -->
+          <div
+            class="relative pl-4 border-l-2 border-neon-dark/30 hover:border-neon-dark transition-colors"
+          >
+            <span
+              class="block text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-2"
+              >Dedicación</span
+            >
+            <p
+              class="text-sm md:text-base font-medium text-text-main leading-tight"
+            >
+              6 a 8 horas por semana
+            </p>
+          </div>
+          <!-- Item 5 - Precio -->
+          <div
+            class="relative pl-4 border-l-2 border-neon-dark hover:border-neon-dark transition-colors bg-gray-50/50 -my-2 py-2 md:bg-transparent md:py-0 md:-my-0 rounded-sm md:rounded-none"
+          >
+            <span
+              class="block text-[10px] font-bold uppercase tracking-widest text-neon-dark mb-2"
+              >Matrícula</span
+            >
+            <p
+              class="text-xl md:text-2xl font-bold text-text-main leading-tight"
+            >
+              USD 1.500
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 03: PROMESA (ACTUALIZADO) -->
+    <section class="py-24 bg-void border-b border-border-dim relative">
+      <div class="max-w-5xl mx-auto px-6 text-center">
+        <h2
+          class="text-4xl md:text-6xl font-light text-text-main mb-6 tracking-tight leading-tight"
+        >
+          Diseña e implementa un proyecto real de IA <br />
+          <span class="text-neon font-medium"
+            >aplicado a tu institución en 90 días.</span
+          >
+        </h2>
+        <p
+          class="text-lg md:text-xl text-text-muted font-light max-w-3xl mx-auto mb-12"
+        >
+          No aprendas IA sin contexto empresarial. Construye un proyecto
+          ejecutable, alineado a tu operación real, con impacto medible y listo
+          para presentar a dirección.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
+          <div
+            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
+          >
+            <div class="text-neon mt-1">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold uppercase tracking-wide text-text-main"
+              >Proyecto real y aplicable</span
+            >
+          </div>
+          <div
+            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
+          >
+            <div class="text-neon mt-1">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold uppercase tracking-wide text-text-main"
+              >Para clínicas y hospitales</span
+            >
+          </div>
+          <div
+            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
+          >
+            <div class="text-neon mt-1">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold uppercase tracking-wide text-text-main"
+              >Proyectos con impacto económico visible</span
+            >
+          </div>
+          <div
+            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
+          >
+            <div class="text-neon mt-1">
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                ></path>
+              </svg>
+            </div>
+            <span
+              class="text-xs font-bold uppercase tracking-wide text-text-main"
+              >Sesiones personalizadas 1 a 1 con el coach</span
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 04: RUTA DE 8 PASOS (CARRUSEL RESPONSIVE) -->
+    <section
+      class="py-16 md:py-24 bg-surface border-y border-border-dim relative overflow-hidden min-h-screen md:h-screen md:min-h-[800px] flex flex-col justify-center"
     >
       <div
-        class="absolute inset-0 bg-ibm-black/90 backdrop-blur-md transition-opacity"
+        class="absolute inset-0 bg-grid-subtle opacity-40 pointer-events-none bg-[size:40px_40px]"
+      ></div>
+
+      <div class="max-w-5xl mx-auto px-6 relative z-10 w-full">
+        <!-- Header Compacto -->
+        <div class="text-center mb-12">
+          <span
+            class="text-neon-dark font-bold text-[10px] uppercase tracking-[0.3em] mb-3 block"
+          >
+            Metodología Aplicada
+          </span>
+          <h2
+            class="text-3xl md:text-4xl font-light text-text-main mb-4 leading-tight"
+          >
+            Ruta de Implementación <span class="font-bold">Paso a Paso</span>
+          </h2>
+          <p
+            class="text-sm md:text-base text-text-muted font-light max-w-xl mx-auto"
+          >
+            Navega por las 8 etapas críticas para asegurar el éxito de tu
+            proyecto de IA.
+          </p>
+        </div>
+
+        <!-- CARRUSEL CONTAINER -->
+        <div class="w-full max-w-3xl mx-auto">
+          <div class="relative">
+            <!-- Botón Anterior -->
+            <button
+              id="prevBtn"
+              class="nav-btn absolute left-[-100px] top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-16 h-16 rounded-sm border border-border-dim bg-white text-text-main z-20 shadow-sm"
+              onclick="moveSlide(-1)"
+            >
+              <svg
+                class="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+
+            <!-- Botón Siguiente -->
+            <button
+              id="nextBtn"
+              class="nav-btn absolute right-[-100px] top-1/2 -translate-y-1/2 hidden md:flex items-center justify-center w-16 h-16 rounded-sm border border-border-dim bg-white text-text-main z-20 shadow-sm"
+              onclick="moveSlide(1)"
+            >
+              <svg
+                class="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
+
+            <!-- VIEWPORT -->
+            <div
+              class="overflow-hidden rounded-sm shadow-xl border border-border-dim bg-white relative min-h-[420px] md:min-h-[380px]"
+            >
+              <!-- TRACK -->
+              <div
+                id="track"
+                class="flex transition-transform duration-500 ease-out h-full"
+              >
+                <!-- SLIDE 1 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >01</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Descubrimiento
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Las instituciones saben que “algo se puede mejorar”,
+                        pero no logran identificar qué problema vale la pena
+                        resolver con IA ni cuál tendrá impacto real.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Priorización de problemas reales conectados con
+                        oportunidades concretas de mejora.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 2 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >02</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Conceptualización
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Muchas iniciativas se quedan en ideas interesantes que
+                        nunca se ejecutan por falta de claridad técnica, datos o
+                        equipo.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Transformar el problema en solución definiendo tipo de
+                        IA, datos necesarios y viabilidad real.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 3 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >03</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Desarrollo
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Las organizaciones no saben cómo pasar del concepto a
+                        algo que funcione, aunque sea a pequeña escala.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Mapeo y construcción de una solución funcional (modelo +
+                        software básico) para probar operatividad.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 4 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >04</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Validación
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Muchos proyectos fallan porque nadie valida resultados
+                        antes de escalar, generando riesgos innecesarios.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Validación con métricas reales, simulaciones y
+                        escenarios operativos para asegurar valor.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 5 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >05</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Escalado
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Un piloto funciona, pero no está listo para usarse de
+                        forma masiva o con alta demanda.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Conversión a MVP o producto operativo preparado para
+                        crecer en usuarios y datos.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 6 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >06</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Regulación
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        En salud, una solución que no cumple normas éticas y
+                        legales no se puede usar, por muy buena que sea.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Alineación con principios éticos, privacidad y
+                        estándares regulatorios para auditorías.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 7 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >07</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Operación
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Muchos proyectos mueren cuando llegan a producción por
+                        falta de gestión operativa diaria.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-surface p-4 rounded-sm border-l-2 border-neon"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-1"
+                        >La Solución</strong
+                      >
+                      <p class="text-sm font-medium text-text-main">
+                        Diseño de operación, monitoreo y mejora continua
+                        integrada a procesos reales.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- SLIDE 8 -->
+                <div
+                  class="min-w-full p-8 md:p-12 flex flex-col justify-center h-full bg-surface"
+                >
+                  <div class="mb-6 flex items-center gap-4">
+                    <span class="text-6xl font-light text-neon-dark opacity-20"
+                      >08</span
+                    >
+                    <div class="h-px bg-border-dim w-full"></div>
+                  </div>
+                  <h3
+                    class="text-2xl md:text-3xl font-bold text-text-main mb-6"
+                  >
+                    Comercialización
+                  </h3>
+                  <div class="space-y-6">
+                    <div>
+                      <strong
+                        class="text-xs uppercase tracking-widest text-gray-400 block mb-2"
+                        >El Problema</strong
+                      >
+                      <p
+                        class="text-base text-text-muted font-light leading-relaxed"
+                      >
+                        Si no hay un modelo claro de valor, el proyecto pierde
+                        apoyo interno rápidamente.
+                      </p>
+                    </div>
+                    <div
+                      class="bg-white p-6 rounded-sm border border-neon shadow-lg"
+                    >
+                      <strong
+                        class="text-xs uppercase tracking-widest text-neon-dark block mb-2"
+                        >Resultado Final</strong
+                      >
+                      <p class="text-base font-bold text-text-main">
+                        Propuesta pulida de impacto: ahorro de costos, mejora
+                        operativa o nuevo servicio.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CONTROLES MÓVILES -->
+          <div class="flex md:hidden justify-between mt-4 px-2">
+            <button
+              class="nav-btn flex items-center justify-center w-12 h-12 rounded-sm border border-border-dim bg-white text-text-main"
+              onclick="moveSlide(-1)"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 19l-7-7 7-7"
+                ></path>
+              </svg>
+            </button>
+            <button
+              class="nav-btn flex items-center justify-center w-12 h-12 rounded-sm border border-border-dim bg-white text-text-main"
+              onclick="moveSlide(1)"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- INDICADORES NUMÉRICOS -->
+          <div
+            class="flex border-t border-border-dim mt-8 md:mt-10 bg-white"
+            id="indicators"
+          >
+            <!-- Se generan via JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 05: PROBLEMA (ACTUALIZADO, SIN BADGE) -->
+    <section class="py-24 bg-text-main text-white relative overflow-hidden">
+      <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+        <h2 class="text-3xl md:text-5xl font-light mb-8">
+          El problema no es la IA.<br />
+          <span class="font-bold"
+            >Es no saber implementarla dentro de tu área.</span
+          >
+        </h2>
+        <p class="text-lg text-gray-400 font-light mb-10 leading-relaxed">
+          La mayoría de iniciativas fracasan porque no están conectadas a un
+          problema real, no entran en el flujo operativo y se quedan en ideas.
+          <br /><span class="text-white font-medium"
+            >Resultado: tiempo perdido y dinero desperdiciado.</span
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 06: SEGMENTOS DE IMPACTO (GRID COLAPSADO - PALETA TURQUESA) -->
+    <section class="py-24 bg-surface relative min-h-screen flex items-center">
+      <div class="max-w-[1400px] mx-auto px-6 relative z-10 w-full">
+        <div class="grid lg:grid-cols-4 gap-0 lg:gap-8 items-start">
+          <!-- BLOQUE 1: Texto Izquierdo -->
+          <div
+            class="lg:col-span-1 lg:sticky lg:top-32 py-4 pr-4 mb-12 lg:mb-0"
+          >
+            <span
+              class="text-neon-dark font-bold text-[10px] uppercase tracking-[0.2em] mb-4 block flex items-center gap-2 border-l-2 border-neon pl-3 no-radius"
+            >
+              Impacto por Sector
+            </span>
+            <h2
+              class="text-3xl md:text-4xl font-semibold text-text-main mb-6 leading-tight tracking-tight"
+            >
+              Resultados medibles <br /><span class="font-light text-text-muted"
+                >según tu realidad.</span
+              >
+            </h2>
+            <p
+              class="text-sm text-text-muted leading-relaxed mb-8 border-t border-border-strong pt-6"
+            >
+              No generalizamos. Adaptamos la estrategia de IA a los desafíos
+              específicos de tu modelo operativo, asegurando métricas claras y
+              defendibles.
+            </p>
+          </div>
+
+          <!-- BLOQUE 2: Grid de Fichas -->
+          <div class="lg:col-span-3">
+            <div class="collapsed-grid grid-cols-1 md:grid-cols-3">
+              <!-- FICHA 1: Clínicas (Turquesa Light/Middle) -->
+              <div class="data-card p-6 md:p-8">
+                <div
+                  class="flex items-start justify-between mb-4 card-divider pb-4"
+                >
+                  <div>
+                    <span
+                      class="text-[10px] font-bold uppercase tracking-widest text-level-5 bg-level-1 px-2 py-1 mb-2 inline-block no-radius"
+                      >Clínicas</span
+                    >
+                    <h3 class="text-lg font-bold text-text-main leading-snug">
+                      Recuperar ingresos y escalar atención
+                    </h3>
+                  </div>
+                  <div
+                    class="w-8 h-8 bg-level-1 flex items-center justify-center text-level-5 shrink-0 ml-2 border border-level-2 no-radius"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <p
+                  class="text-xs text-text-muted mb-6 leading-relaxed min-h-[40px]"
+                >
+                  IA aplicada a agenda, recordatorios y triage administrativo.
+                </p>
+
+                <div class="space-y-0 mb-6 flex-1 border-t border-gray-100">
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Reducción no-shows
+                    </p>
+                    <p class="text-3xl font-light text-text-main">20%–35%</p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Menos carga admin
+                    </p>
+                    <p class="text-3xl font-light text-text-main">hasta 30%</p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Ingresos extra (agenda)
+                    </p>
+                    <p class="text-3xl font-light text-text-main">10%–20%</p>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-4">
+                  <div class="flex flex-col gap-2">
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> ROI rápido
+                    </span>
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> Implementación ágil
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FICHA 2: Diagnóstico (Turquesa Middle/Dark) -->
+              <div class="data-card p-6 md:p-8">
+                <div
+                  class="flex items-start justify-between mb-4 card-divider pb-4"
+                >
+                  <div>
+                    <span
+                      class="text-[10px] font-bold uppercase tracking-widest text-level-5 bg-level-1 px-2 py-1 mb-2 inline-block no-radius"
+                      >Diagnóstico</span
+                    >
+                    <h3 class="text-lg font-bold text-text-main leading-snug">
+                      Más productividad sin más personal
+                    </h3>
+                  </div>
+                  <div
+                    class="w-8 h-8 bg-level-1 flex items-center justify-center text-level-5 shrink-0 ml-2 border border-level-2 no-radius"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <p
+                  class="text-xs text-text-muted mb-6 leading-relaxed min-h-[40px]"
+                >
+                  IA en lectura asistida, priorización y control de calidad.
+                </p>
+
+                <div class="space-y-0 mb-6 flex-1 border-t border-gray-100">
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Productividad
+                    </p>
+                    <p class="text-3xl font-light text-text-main">
+                      +25% a +50%
+                    </p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Tiempos respuesta
+                    </p>
+                    <p class="text-3xl font-light text-text-main">
+                      −20% a −40%
+                    </p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100 bg-level-1/50">
+                    <p
+                      class="text-[10px] text-level-5 font-bold uppercase tracking-wide mb-1"
+                    >
+                      Cualitativo
+                    </p>
+                    <p class="text-sm font-medium text-text-main">
+                      Mejor uso del tiempo
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-4">
+                  <div class="flex flex-col gap-2">
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> Impacto inmediato
+                    </span>
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> ROI defendible
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- FICHA 3: Hospitales (Turquesa Dark) -->
+              <div class="data-card p-6 md:p-8">
+                <div
+                  class="flex items-start justify-between mb-4 card-divider pb-4"
+                >
+                  <div>
+                    <span
+                      class="text-[10px] font-bold uppercase tracking-widest text-level-5 bg-level-1 px-2 py-1 mb-2 inline-block no-radius"
+                      >Hospitales</span
+                    >
+                    <h3 class="text-lg font-bold text-text-main leading-snug">
+                      Aliviar burnout y proteger ingresos
+                    </h3>
+                  </div>
+                  <div
+                    class="w-8 h-8 bg-level-1 flex items-center justify-center text-level-5 shrink-0 ml-2 border border-level-2 no-radius"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+
+                <p
+                  class="text-xs text-text-muted mb-6 leading-relaxed min-h-[40px]"
+                >
+                  IA para documentación clínica, codificación y flujos
+                  operativos.
+                </p>
+
+                <div class="space-y-0 mb-6 flex-1 border-t border-gray-100">
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Carga administrativa
+                    </p>
+                    <p class="text-3xl font-light text-text-main">
+                      −30% a −50%
+                    </p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100 bg-level-1/50">
+                    <p
+                      class="text-[10px] text-level-5 font-bold uppercase tracking-wide mb-1"
+                    >
+                      Impacto Humano
+                    </p>
+                    <p class="text-sm font-medium text-text-main">
+                      Reducción de burnout
+                    </p>
+                  </div>
+                  <div class="py-3 border-b border-gray-100">
+                    <p
+                      class="text-[10px] text-text-muted uppercase tracking-wide mb-1"
+                    >
+                      Denegaciones
+                    </p>
+                    <p class="text-3xl font-light text-text-main">
+                      −15% a −30%
+                    </p>
+                  </div>
+                </div>
+
+                <div class="mt-auto pt-4">
+                  <div class="flex flex-col gap-2">
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> Impacto operativo real
+                    </span>
+                    <span
+                      class="inline-flex items-center gap-2 text-[10px] font-bold text-text-main uppercase tracking-widest"
+                    >
+                      <span class="text-level-4">✓</span> Control financiero
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 07: RESULTADO FUNCIONAL (Mantenido) -->
+    <section class="py-24 bg-surface border-b border-border-dim relative">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <span
+          class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 block"
+          >Resultado Funcional</span
+        >
+        <h2 class="text-3xl md:text-5xl font-light text-text-main mb-12">
+          Al finalizar, no tienes ideas. <br />
+          <span class="font-normal">Tienes un proyecto listo.</span>
+        </h2>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+          <div
+            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
+          >
+            <div class="text-neon mb-3">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+            </div>
+            <h4 class="font-bold text-text-main mb-2">Documento Completo</h4>
+            <p class="text-xs text-text-muted">
+              20–25 páginas con el plan detallado.
+            </p>
+          </div>
+          <div
+            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
+          >
+            <div class="text-neon mb-3">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+                ></path>
+              </svg>
+            </div>
+            <h4 class="font-bold text-text-main mb-2">
+              Presentación Ejecutiva
+            </h4>
+            <p class="text-xs text-text-muted">
+              Lista para comité o dirección.
+            </p>
+          </div>
+          <div
+            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
+          >
+            <div class="text-neon mb-3">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+            <h4 class="font-bold text-text-main mb-2">Métricas Claras</h4>
+            <p class="text-xs text-text-muted">KPIs de impacto definidos.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 08: EXPERTA (DARK MODE) -->
+    <section
+      class="w-full relative py-24 overflow-hidden bg-expert-dark text-white"
+    >
+      <!-- Fondo Decorativo Punteado -->
+      <div class="absolute inset-0 dots-bg pointer-events-none"></div>
+      <!-- Gradiente sutil -->
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-expert-dark via-transparent to-expert-dark opacity-90 pointer-events-none"
+      ></div>
+
+      <div class="max-w-[1400px] mx-auto px-6 lg:px-12 relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 lg:gap-24 items-stretch">
+          <!-- COLUMNA 1: IMAGEN -->
+          <div class="lg:col-span-5 relative flex flex-col">
+            <div
+              class="relative z-10 h-full w-full overflow-hidden shadow-2xl border border-white/5 group bg-[#1a2233]"
+            >
+              <img
+                src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/e627f8e7982907ed650e22e58e919309.png"
+                alt="Elisa Martín Garijo"
+                class="w-full h-full object-cover object-top grayscale opacity-90 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 ease-in-out transform group-hover:scale-105"
+              />
+              <div
+                class="absolute bottom-0 left-0 bg-expert-dark/95 backdrop-blur p-6 border-t border-r border-border-dim max-w-[85%]"
+              >
+                <p
+                  class="text-[10px] font-bold uppercase tracking-widest text-expert-neon mb-2"
+                >
+                  Trayectoria
+                </p>
+                <p class="text-sm font-light text-white leading-snug">
+                  IBM Health Ecosystem Director & Miembro IBM Academy of
+                  Technology.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMNA 2: CONTENIDO -->
+          <div class="lg:col-span-7 flex flex-col justify-between py-2">
+            <div>
+              <!-- Header -->
+              <div class="mb-8">
+                <span
+                  class="inline-block py-1 px-3 border border-expert-neon text-expert-neon text-[10px] font-bold uppercase tracking-[0.2em] mb-6 rounded-sm"
+                >
+                  NUESTRA EXPERTA
+                </span>
+                <h2
+                  class="text-5xl md:text-7xl font-light text-white mb-2 leading-[0.9] tracking-tighter"
+                >
+                  Elisa Martín <br /><span class="font-bold text-white"
+                    >Garijo</span
+                  >
+                </h2>
+              </div>
+
+              <!-- Bio -->
+              <div
+                class="space-y-6 max-w-2xl text-lg text-gray-400 font-light leading-relaxed border-l-2 border-expert-neon pl-8 mb-8"
+              >
+                <p>
+                  Matemática y referente europea en la aplicación de IA en
+                  salud. Su enfoque no es teórico: se centra en
+                  <strong class="text-white font-medium"
+                    >convertir tecnología avanzada en soluciones
+                    utilizables</strong
+                  >
+                  dentro de sistemas sanitarios reales.
+                </p>
+                <p class="text-base text-gray-500">
+                  Tras liderar la estrategia de innovación en IBM Europa, hoy
+                  diseña sistemas de soporte a la decisión médica donde el fallo
+                  no es una opción.
+                </p>
+              </div>
+
+              <!-- Redes Sociales -->
+              <div
+                class="pl-8 mb-10 flex items-center gap-8 border-b border-white/5 pb-8 w-fit"
+              >
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-expert-neon transition-colors group flex items-center gap-3"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
+                    />
+                  </svg>
+                  <span class="text-xs font-bold uppercase tracking-widest"
+                    >LinkedIn</span
+                  >
+                </a>
+                <a
+                  href="#"
+                  class="text-gray-400 hover:text-expert-neon transition-colors group flex items-center gap-3"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path
+                      d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"
+                    />
+                  </svg>
+                  <span class="text-xs font-bold uppercase tracking-widest"
+                    >Facebook</span
+                  >
+                </a>
+              </div>
+            </div>
+
+            <!-- ACTION AREA: VIDEO -->
+            <div
+              class="flex flex-col sm:flex-row items-start sm:items-center gap-8 group cursor-pointer w-fit pl-8 sm:pl-0 mt-auto"
+              onclick="openModal()"
+            >
+              <div
+                class="relative w-48 h-28 bg-gray-900 rounded-sm overflow-hidden shadow-lg border border-white/10 shrink-0 transition-transform duration-300 group-hover:-translate-y-1"
+              >
+                <img
+                  src="https://fundacioncajasol.com/wp-content/uploads/ciclo-think-tank-innovacion-cesur-elisa-martin-garijo-ibm-fundacion-cajasol-sevilla-scaled.jpg"
+                  class="w-full h-full object-cover object-center opacity-70 group-hover:opacity-90 transition-opacity"
+                  alt="Video Thumbnail"
+                />
+                <div
+                  class="thumb-play-overlay absolute inset-0 flex items-center justify-center"
+                >
+                  <div
+                    class="thumb-icon w-12 h-12 border border-white/30 rounded-none flex items-center justify-center text-white backdrop-blur-sm shadow-md"
+                  >
+                    <svg
+                      class="w-5 h-5 ml-0.5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col">
+                <span
+                  class="text-sm font-bold text-white uppercase tracking-wide group-hover:text-expert-neon transition-colors"
+                >
+                  Ver introducción de la experta
+                </span>
+                <span
+                  class="text-xs text-gray-500 mt-2 flex items-center gap-2 font-mono"
+                >
+                  <span
+                    class="w-1.5 h-1.5 rounded-full bg-expert-neon animate-pulse"
+                  ></span>
+                  VIDEO PREVIEW • 02:14
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 09: CTA FINAL (ACTUALIZADO) -->
+    <section
+      id="cta"
+      class="py-40 bg-surface border-t border-border-dim relative overflow-hidden"
+    >
+      <div class="max-w-3xl mx-auto text-center px-6 relative z-10">
+        <h2
+          class="text-5xl md:text-7xl font-light text-text-main mb-8 tracking-tight"
+        >
+          Cada mes que no actúas, <br />
+          <span class="font-bold">el costo sigue creciendo.</span>
+        </h2>
+        <p
+          class="text-text-muted text-lg leading-relaxed mb-12 font-light max-w-xl mx-auto"
+        >
+          Si no implementas IA ahora, pierdes la ventana presupuestaria y
+          mantienes la presión operativa. Actuar hoy es dejar de perder.
+        </p>
+        <a
+          href="#"
+          class="inline-block px-14 py-7 btn-black font-bold text-sm uppercase tracking-[0.2em] rounded-sm shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
+        >
+          Agendar una Cita
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-void border-t border-border-dim py-16 px-6 text-center">
+      <div class="max-w-7xl mx-auto">
+        <img
+          src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
+          alt="Unifranz Logo"
+          class="h-24 w-auto mx-auto mb-8 opacity-50 grayscale"
+        />
+        <p class="text-xs text-text-muted font-bold uppercase tracking-widest">
+          © 2026 Unifranz Executive Education. Health Intelligence Unit.
+        </p>
+      </div>
+    </footer>
+
+    <!-- MODAL VIDEO (Popup) -->
+    <div
+      id="videoModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center"
+    >
+      <div
+        class="absolute inset-0 bg-black/95 backdrop-blur-md transition-opacity"
         onclick="closeModal()"
       ></div>
       <div
-        class="bg-white w-full max-w-md p-10 relative z-10 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col rounded-sm border-t-4 border-clinical-teal"
         id="modalContent"
+        class="modal-enter relative w-full max-w-5xl aspect-video bg-black shadow-2xl mx-4 border border-white/10"
       >
-        <div class="mb-8">
-          <h3 class="text-2xl font-light text-ibm-black mb-1">
-            Resultados Listos
-          </h3>
-          <p class="text-xs text-gray-500 uppercase tracking-wide">
-            Ingrese sus datos para ver el informe detallado
-          </p>
-        </div>
-        <form class="space-y-5">
-          <div class="relative z-0 w-full group">
-            <input
-              type="text"
-              id="inputName"
-              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
-              placeholder=" "
-              required
-              oninput="validateForm()"
-            />
-            <label
-              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Nombre Completo</label
-            >
-          </div>
-          <div class="relative z-0 w-full group">
-            <input
-              type="email"
-              id="inputEmail"
-              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
-              placeholder=" "
-              required
-              oninput="validateForm()"
-            />
-            <label
-              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Correo</label
-            >
-          </div>
-          <div class="relative z-0 w-full group">
-            <input
-              type="tel"
-              id="inputPhone"
-              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
-              placeholder=" "
-            />
-            <label
-              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-              >Número Telefónico</label
-            >
-          </div>
-          <button
-            type="button"
-            id="btnSubmit"
-            onclick="goToResults()"
-            class="w-full py-4 text-white text-xs font-bold uppercase tracking-widest transition-all mt-6 btn-disabled"
-          >
-            Descargar Informe
-          </button>
-        </form>
         <button
           onclick="closeModal()"
-          class="absolute top-4 right-4 text-gray-300 hover:text-ibm-black transition-colors"
+          class="absolute -top-12 right-0 text-white hover:text-neon transition-colors text-sm font-bold uppercase tracking-widest flex items-center gap-2"
         >
+          Cerrar
           <svg
-            class="w-5 h-5"
+            class="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -876,221 +1928,214 @@
             ></path>
           </svg>
         </button>
+        <div id="videoContainer" class="w-full h-full bg-black"></div>
       </div>
     </div>
 
-    <!-- FOOTER SIMPLE -->
-    <footer class="bg-white border-t border-gray-200 py-12">
-      <div
-        class="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-6"
-      >
-        <div class="flex items-center gap-4">
-          <img
-            src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
-            class="h-24 w-auto grayscale"
-            alt="Unifranz"
-          />
-          <span class="text-[10px] text-gray-400">© 2026</span>
-        </div>
-        <div class="flex gap-6 text-[10px] uppercase font-bold text-gray-500">
-          <a href="#" class="hover:text-ibm-black">Privacidad</a>
-          <a href="#" class="hover:text-ibm-black">Términos de Uso</a>
-          <a href="#" class="hover:text-ibm-black">Contacto</a>
-        </div>
-      </div>
-    </footer>
-
-    <!-- LOGIC -->
+    <!-- LÓGICA DINÁMICA -->
     <script>
-      const matrixData = {
-        sys: [
-          "Los sistemas no se hablan entre sí y mucho se hace a mano.",
-          "Tenemos un sistema principal, pero con poca conexión a otros.",
-          "Algunos sistemas están conectados, no todos, y no siempre funciona bien.",
-          "La mayoría de los sistemas están conectados y la información fluye.",
-          "Los sistemas están bien integrados y la información está casi en tiempo real.",
-        ],
-        data: [
-          "La información está desordenada, incompleta o duplicada.",
-          "Hay información usable, pero requiere mucho trabajo manual.",
-          "La información es bastante ordenada y se revisa periódicamente.",
-          "La información es confiable, clara y se controla su calidad.",
-          "La información está lista para usarse en análisis avanzados o IA.",
-        ],
-        rules: [
-          "No hay reglas claras sobre uso de datos o responsabilidades.",
-          "Hay reglas básicas de privacidad, pero no siempre se siguen.",
-          "Existen responsables y reglas claras para usar la información.",
-          "Las reglas se aplican de forma consistente y se revisan con frecuencia.",
-          "Hay controles claros, ética definida y confianza en el uso de tecnología.",
-        ],
-        people: [
-          "No hay personas dedicadas a datos o mejora digital.",
-          "Hay interés, pero falta experiencia y tiempo asignado.",
-          "Existen personas responsables y apoyo externo si es necesario.",
-          "Hay un equipo interno con roles claros y apoyo directivo.",
-          "El equipo puede diseñar, probar e implementar soluciones de forma continua.",
-        ],
-        use: [
-          "No se usa IA; solo se habla del tema.",
-          "Se han hecho pruebas pequeñas sin impacto real.",
-          "Hay soluciones funcionando en algunas áreas.",
-          "Varias áreas usan IA con resultados medidos.",
-          "La IA está integrada al trabajo diario y genera valor claro.",
-        ],
+      // 1. ESCALA DE COLORES TURQUESA
+      const levels = {
+        inicial: {
+          label: "Nivel INICIAL",
+          colorText: "text-cyan-900",
+          bgBadge: "bg-level-1 text-cyan-900 border-level-2",
+          hexColor: "#b2ebf2",
+          glowColor: "bg-level-1/50",
+          bgProject: "bg-level-1/30 border-level-2",
+          quote: "“Ordenar antes de automatizar”",
+          desc: "Tu institución se parece a la mayoría de los prestadores ambulatorios pequeños o fragmentados. Existe presión por eficiencia, pero la información está dispersa. El error común es querer “hacer IA” sin una base clara.",
+          focus:
+            "Ganar orden, claridad operativa y una base de datos confiable para empezar a decidir mejor.",
+          projectTitle:
+            "Proyecto 1 — Elabora un proyecto de IA para estructurar la información operativa",
+          projectList: [
+            "Unificar datos básicos de pacientes, citas y procesos",
+            "Ordenar información que hoy está repartida en planillas",
+            "Preparar la base para futuros proyectos de IA",
+          ],
+          outcome: "Datos confiables y listos para IA.",
+          alert: true,
+        },
+        basico: {
+          label: "Nivel BÁSICO",
+          colorText: "text-cyan-800",
+          bgBadge: "bg-level-2 text-cyan-900 border-level-3",
+          hexColor: "#b2ebf2",
+          glowColor: "bg-level-2/40",
+          bgProject: "bg-level-2/20 border-level-3",
+          quote: "“Reducir fricción y demostrar valor rápido”",
+          desc: "Encajas con redes de clínicas con alto volumen. El dolor principal es la agenda y las inasistencias. Aquí la IA empieza a impactar ingresos y eficiencia.",
+          focus:
+            "Reducir pérdidas invisibles y mejorar la experiencia del paciente sin complejidad técnica.",
+          projectTitle:
+            "Proyecto 2 — Elabora un proyecto de IA para optimizar la gestión de agenda",
+          projectList: [
+            "Predecir inasistencias y reorganizar agendas",
+            "Activar recordatorios inteligentes",
+            "Mejorar uso del tiempo clínico",
+          ],
+          outcome: "Más consultas atendidas.",
+          alert: true,
+        },
+        intermedio: {
+          label: "Nivel INTERMEDIO",
+          colorText: "text-level-5",
+          bgBadge: "bg-level-3/20 text-level-5 border-level-3",
+          hexColor: "#71dade",
+          glowColor: "bg-level-3/20",
+          bgProject: "bg-level-3/10 border-level-3/30",
+          quote: "“IA aplicada donde los datos ya existen”",
+          desc: "Te pareces a centros de diagnóstico. Hay datos y volumen. La IA encaja naturalmente. El foco ya no es ordenar, sino priorizar y acelerar.",
+          focus:
+            "Usar IA para mejorar tiempos de respuesta, calidad y productividad del equipo.",
+          projectTitle:
+            "Proyecto 3 — Elabora un proyecto de IA para priorización y apoyo en diagnóstico",
+          projectList: [
+            "Priorizar estudios urgentes",
+            "Apoyar la lectura inicial",
+            "Reducir tiempos de entrega",
+          ],
+          outcome: "Más productividad instalada.",
+          alert: true,
+        },
+        avanzado: {
+          label: "Nivel AVANZADO",
+          colorText: "text-level-5",
+          bgBadge: "bg-level-4/20 text-level-5 border-level-4",
+          hexColor: "#4cb5c5",
+          glowColor: "bg-level-4/20",
+          bgProject: "bg-level-4/10 border-level-4/30",
+          quote: "“Resolver el gran dolor operativo”",
+          desc: "Encajas con hospitales medianos. El dolor es burnout y carga administrativa. Aquí la IA ya no es opcional: es una herramienta de gestión.",
+          focus:
+            "Liberar tiempo clínico y mejorar eficiencia sin aumentar recursos.",
+          projectTitle:
+            "Proyecto 4 — Elabora un proyecto de IA para reducir la carga administrativa",
+          projectList: [
+            "Documentación clínica asistida",
+            "Codificación y autorizaciones",
+            "Mejora del flujo de información",
+          ],
+          outcome: "Menos burnout, mayor eficiencia.",
+          alert: false,
+        },
+        lider: {
+          label: "Nivel LÍDER",
+          colorText: "text-level-5",
+          bgBadge: "bg-level-5/10 text-level-5 border-level-5/30",
+          hexColor: "#0097a7",
+          glowColor: "bg-level-5/20",
+          bgProject: "bg-level-5/5 border-level-5/20",
+          quote: "“IA como ventaja estratégica”",
+          desc: "Te pareces a aseguradores o grandes redes. El foco está en riesgo y gestión poblacional. La IA ya forma parte de la estrategia.",
+          focus: "Usar IA para anticipar, controlar y liderar.",
+          projectTitle:
+            "Proyecto 5 — Elabora un proyecto de IA para vigilancia y toma de decisiones",
+          projectList: [
+            "Detectar riesgos tempranos",
+            "Analizar grandes volúmenes de datos",
+            "Apoyar decisiones de alto impacto",
+          ],
+          outcome: "Control estratégico y liderazgo.",
+          alert: false,
+        },
       };
 
-      const currentScores = { sys: 1, data: 1, rules: 1, people: 1, use: 1 };
+      const ui = {
+        scoreMain: document.getElementById("score-main"),
+        scoreCircle: document.getElementById("score-circle"),
+        levelBadge: document.getElementById("level-badge"),
+        levelTitle: document.getElementById("level-title"),
+        levelQuote: document.getElementById("level-quote"),
+        levelDesc: document.getElementById("level-desc"),
+        levelFocus: document.getElementById("level-focus"),
+        projectBlock: document.getElementById("project-block"),
+        projectTitle: document.getElementById("project-title"),
+        projectList: document.getElementById("project-list"),
+        projectOutcome: document.getElementById("project-outcome"),
+        cardGlow: document.getElementById("card-glow"),
+        indicator: document.getElementById("status-indicator"),
+        alertBox: document.getElementById("alert-box"),
+        userGreeting: document.getElementById("user-greeting"),
+        userName: document.getElementById("user-name"),
+        defaultGreeting: document.getElementById("default-greeting"),
+      };
 
-      function setVal(dim, val) {
-        currentScores[dim] = val;
-        updateVisuals(dim, val, false);
-        calculateTotal();
-      }
+      function updateDashboard(score) {
+        let data = null;
+        if (score <= 9) data = levels.inicial;
+        else if (score <= 14) data = levels.basico;
+        else if (score <= 18) data = levels.intermedio;
+        else if (score <= 22) data = levels.avanzado;
+        else data = levels.lider;
 
-      // Función para previsualizar sin guardar
-      function previewVal(dim, val) {
-        updateVisuals(dim, val, true);
-      }
+        ui.scoreMain.innerText = score;
+        ui.levelBadge.className = `inline-block px-5 py-2 md:px-6 md:py-3 text-[10px] md:text-xs font-bold uppercase tracking-widest border rounded-sm transition-colors duration-300 ${data.bgBadge}`;
+        ui.levelBadge.innerText = data.label;
 
-      // Función para restaurar el valor guardado
-      function resetPreview(dim) {
-        updateVisuals(dim, currentScores[dim], false);
-      }
+        const maxOffset = 440;
+        const percentage = score / 25;
+        const newOffset = maxOffset - maxOffset * percentage;
+        ui.scoreCircle.style.strokeDashoffset = newOffset;
+        ui.scoreCircle.style.stroke = data.hexColor;
 
-      function updateVisuals(dim, val, isPreview) {
-        let width =
-          val === 2
-            ? "25%"
-            : val === 3
-              ? "50%"
-              : val === 4
-                ? "75%"
-                : val === 5
-                  ? "100%"
-                  : "0%";
-        document.getElementById(`fill-${dim}`).style.width = width;
-
-        for (let i = 1; i <= 5; i++) {
-          const node = document.getElementById(`node-${dim}-${i}`);
-          if (i <= val) node.classList.add("active");
-          else node.classList.remove("active");
-        }
-
-        const numEl = document.getElementById(`val-${dim}`);
-        numEl.innerText = val;
-
-        // Estilos visuales para indicar "Preview" vs "Selected"
-        if (isPreview) {
-          numEl.classList.remove("text-gray-300");
-          numEl.classList.add("text-clinical-teal");
-          document
-            .getElementById(`box-${dim}`)
-            .classList.replace("border-gray-200", "border-clinical-teal");
+        if (data.alert) {
+          ui.alertBox.classList.remove("hidden");
+          ui.alertBox.classList.add("flex");
         } else {
-          numEl.classList.add("text-gray-300");
-          numEl.classList.remove("text-clinical-teal");
-          document
-            .getElementById(`box-${dim}`)
-            .classList.replace("border-clinical-teal", "border-gray-200");
+          ui.alertBox.classList.add("hidden");
+          ui.alertBox.classList.remove("flex");
         }
 
-        // Actualizar texto descriptivo
-        const desc = document.getElementById(`desc-${dim}`);
-        if (desc) desc.innerText = matrixData[dim][val - 1];
-      }
+        ui.levelTitle.innerHTML = `<span class="${data.colorText}">${data.label}</span>`;
+        ui.levelQuote.innerText = data.quote;
+        ui.levelDesc.innerText = data.desc;
+        ui.levelFocus.innerText = data.focus;
 
-      function calculateTotal() {
-        const values = Object.values(currentScores);
-        const total = values.reduce((a, b) => a + b, 0);
-        let category = "NIVEL INICIAL",
-          action = "Primero hay que ordenar la base";
-        if (total >= 10 && total <= 14) {
-          category = "NIVEL BÁSICO";
-          action = "Se puede empezar con pilotos simples";
-        } else if (total >= 15 && total <= 18) {
-          category = "NIVEL INTERMEDIO";
-          action = "Listo para proyectos reales";
-        } else if (total >= 19 && total <= 22) {
-          category = "NIVEL AVANZADO";
-          action = "Preparado para escalar";
-        } else if (total >= 23) {
-          category = "NIVEL LÍDER";
-          action = "IA integrada al negocio";
-        }
+        ui.projectBlock.className = `tech-card p-6 md:p-10 rounded-sm mt-auto transition-colors duration-500 border border-border-dim ${data.bgProject}`;
+        ui.projectTitle.innerText = data.projectTitle;
+        ui.projectList.innerHTML = data.projectList
+          .map((item) => `<li>${item}</li>`)
+          .join("");
+        ui.projectOutcome.innerText = data.outcome;
 
-        document.getElementById("total-score").innerText = total;
-        document.getElementById("result-category").innerText = category;
-        document.getElementById("result-action").innerText = action;
+        ui.cardGlow.className = `absolute top-0 right-0 w-64 md:w-80 h-64 md:h-80 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500 ${data.glowColor}`;
 
-        // Circle math: Radius 110 -> Circumference 2 * pi * 110 ≈ 691
-        const maxOffset = 691;
-        document.getElementById("score-circle").style.strokeDashoffset =
-          maxOffset - Math.max(0, (total - 5) / 20) * maxOffset;
-      }
-
-      function validateForm() {
-        const name = document.getElementById("inputName").value.trim();
-        const email = document.getElementById("inputEmail").value.trim();
-        const btn = document.getElementById("btnSubmit");
-        if (name !== "" && email !== "") {
-          btn.classList.remove("btn-disabled");
-          btn.classList.add("bg-ibm-black", "hover:bg-gray-800");
-        } else {
-          btn.classList.add("btn-disabled");
-          btn.classList.remove("bg-ibm-black", "hover:bg-gray-800");
+        if (ui.indicator) {
+          ui.indicator.className = `w-1.5 h-1.5 rounded-full animate-pulse bg-[${data.hexColor}]`;
+          ui.indicator.style.backgroundColor = data.hexColor;
         }
       }
-      function openModal() {
-        const m = document.getElementById("leadModal"),
-          c = document.getElementById("modalContent");
-        m.classList.remove("hidden");
-        setTimeout(() => {
-          c.classList.remove("scale-95", "opacity-0");
-          c.classList.add("scale-100", "opacity-100");
-        }, 10);
-      }
-      function closeModal() {
-        const m = document.getElementById("leadModal"),
-          c = document.getElementById("modalContent");
-        c.classList.remove("scale-100", "op acity-100");
-        c.classList.add("scale-95", "opacity-0");
-        setTimeout(() => m.classList.add("hidden"), 300);
-      }
 
-      function goToResults() {
-        const name = document.getElementById("inputName").value.trim();
-        const email = document.getElementById("inputEmail").value.trim();
-        const phone = document.getElementById("inputPhone").value.trim();
+      function loadDataFromStorage() {
+        const storedData = localStorage.getItem("clinicalNexusData");
+        if (storedData) {
+          const data = JSON.parse(storedData);
+          const totalScore = parseInt(data.totalScore) || 9;
 
-        if (name === "" || email === "") return;
-
-        // Guardar datos en localStorage para usar en resultado.html
-        localStorage.setItem(
-          "clinicalNexusData",
-          JSON.stringify({
-            name: name,
-            email: email,
-            phone: phone,
-            scores: currentScores,
-            totalScore: document.getElementById("total-score").innerText,
-          }),
-        );
-
-        // Redirigir a resultado.html
-        window.location.href = "resultado.html";
+          if (data.name && ui.userName && ui.userGreeting) {
+            ui.userName.innerText = data.name;
+            ui.userGreeting.classList.remove("hidden");
+            if (ui.defaultGreeting) ui.defaultGreeting.classList.add("hidden");
+          }
+          updateDashboard(totalScore);
+          return true;
+        }
+        return false;
       }
 
-      // Inicialización
-      ["sys", "data", "rules", "people", "use"].forEach((dim) =>
-        updateVisuals(dim, 1, false),
-      );
-      calculateTotal();
+      // Init Dashboard
+      const hasData = loadDataFromStorage();
+      if (!hasData) {
+        updateDashboard(9);
+      }
 
+      // 2. SCROLL ANIMATION
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) entry.target.classList.add("visible");
+            if (entry.isIntersecting) entry.target.classList.add("active");
           });
         },
         { threshold: 0.1 },
@@ -1098,6 +2143,91 @@
       document
         .querySelectorAll(".reveal")
         .forEach((el) => observer.observe(el));
+
+      // 3. CARRUSEL LOGIC
+      let currentSlide = 0;
+      const totalSlides = 8;
+      const track = document.getElementById("track");
+      const indicatorsContainer = document.getElementById("indicators");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      if (track && indicatorsContainer) {
+        for (let i = 0; i < totalSlides; i++) {
+          const tab = document.createElement("button");
+          tab.className = `indicator-tab flex-1 py-4 text-xs md:text-sm font-light text-text-muted hover:text-text-main border-r border-border-dim last:border-r-0`;
+          tab.innerText = (i + 1).toString().padStart(2, "0");
+          tab.onclick = () => goToSlide(i);
+          indicatorsContainer.appendChild(tab);
+        }
+
+        function updateUI() {
+          track.style.transform = `translateX(-${currentSlide * 100}%)`;
+          const tabs = indicatorsContainer.children;
+          for (let i = 0; i < tabs.length; i++) {
+            if (i === currentSlide) {
+              tabs[i].classList.add("active");
+              tabs[i].classList.remove("text-text-muted");
+            } else {
+              tabs[i].classList.remove("active");
+              tabs[i].classList.add("text-text-muted");
+            }
+          }
+          if (prevBtn) prevBtn.disabled = currentSlide === 0;
+          if (nextBtn) nextBtn.disabled = currentSlide === totalSlides - 1;
+          const mobileBtns = document.querySelectorAll(".md\\:hidden .nav-btn");
+          if (mobileBtns.length > 0) {
+            mobileBtns[0].disabled = currentSlide === 0;
+            mobileBtns[1].disabled = currentSlide === totalSlides - 1;
+          }
+        }
+
+        function moveSlide(direction) {
+          const newIndex = currentSlide + direction;
+          if (newIndex >= 0 && newIndex < totalSlides) {
+            currentSlide = newIndex;
+            updateUI();
+          }
+        }
+
+        function goToSlide(index) {
+          currentSlide = index;
+          updateUI();
+        }
+        updateUI();
+      }
+
+      // 4. VIDEO MODAL LOGIC
+      const modal = document.getElementById("videoModal");
+      const content = document.getElementById("modalContent");
+      const videoContainer = document.getElementById("videoContainer");
+      // Added &muted=0 to force unmute
+      const videoSrc =
+        "https://player.vimeo.com/video/851013035?h=8f075d5f2f&badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=0";
+
+      function openModal() {
+        modal.classList.remove("hidden");
+        videoContainer.innerHTML = `
+            <iframe src="${videoSrc}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen class="absolute top-0 left-0 w-full h-full" title="Elisa Martín Garijo"></iframe>
+        `;
+        setTimeout(() => {
+          content.classList.add("modal-enter-active");
+        }, 10);
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        content.classList.remove("modal-enter-active");
+        setTimeout(() => {
+          modal.classList.add("hidden");
+          videoContainer.innerHTML = "";
+        }, 300);
+        document.body.style.overflow = "auto";
+      }
+
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") closeModal();
+      });
     </script>
   </body>
 </html>
