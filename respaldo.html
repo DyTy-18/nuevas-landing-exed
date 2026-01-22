@@ -1,16 +1,14 @@
-pagina web pre contenido:
-
 <!doctype html>
 <html lang="es" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unifranz EXED | Reporte Estratégico</title>
+    <title>Unifranz EXED | Health Intelligence</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@100;300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
 
@@ -19,37 +17,23 @@ pagina web pre contenido:
         theme: {
           extend: {
             colors: {
-              neon: "#03e4a2", // Verde Element (Turquesa)
-              "neon-dark": "#00c48a", // Verde oscuro para texto
-              warning: "#ff9f2a", // Naranja alerta
-              danger: "#ff4b4b", // Rojo alerta
-              void: "#ffffff", // Fondo Blanco
-              surface: "#f8f9fa", // Gris muy claro
-              "surface-hover": "#f0f2f5",
-              "border-dim": "rgba(0, 0, 0, 0.08)",
-              "text-main": "#18181b", // Negro suave
-              "text-muted": "#52525b", // Gris medio
-              "brand-blue": "#2563eb", // Azul Institucional
-              "brand-green": "#16a34a", // Verde Diagnostico
-              "brand-red": "#dc2626", // Rojo Hospital
+              "ibm-black": "#121212",
+              "clinical-teal": "#0ee19f",
+              "clinical-teal-dark": "#00b67a",
+              "custom-blue": "#71dade" /* Nuevo color agregado */,
+              "light-gray": "#f4f4f4",
+              "subtle-gray": "#f8fafc",
+              "border-gray": "#e2e8f0",
             },
             fontFamily: {
               sans: ['"Archivo"', "sans-serif"],
-              mono: ['"Archivo"', "monospace"],
             },
             backgroundImage: {
-              "grid-subtle":
-                "linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)",
+              "hero-medical":
+                "url('https://static.tecnichenuove.it/tecnicaospedaliera/2023/09/AdobeStock_641478768-scaled.jpeg')",
             },
-            animation: {
-              "fade-in-up":
-                "fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-            },
-            keyframes: {
-              fadeInUp: {
-                "0%": { opacity: 0, transform: "translateY(20px)" },
-                "100%": { opacity: 1, transform: "translateY(0)" },
-              },
+            boxShadow: {
+              "soft-xl": "0 20px 40px -10px rgba(0, 0, 0, 0.05)",
             },
           },
         },
@@ -59,392 +43,743 @@ pagina web pre contenido:
     <style>
       body {
         background-color: #ffffff;
-        color: #18181b;
+        color: #121212;
         font-family: "Archivo", sans-serif;
         font-weight: 300;
-        overflow-x: hidden;
+      }
+
+      .hero-overlay {
+        background: linear-gradient(
+          90deg,
+          #ffffff 15%,
+          rgba(255, 255, 255, 0.92) 50%,
+          rgba(255, 255, 255, 0.1) 100%
+        );
+      }
+
+      /* Estilos Ecualizador */
+      .eq-track-container {
+        position: relative;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        width: 100%;
+      }
+      .eq-track-bg {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: #e5e7eb;
+        border-radius: 99px;
+      }
+      .eq-fill {
+        position: absolute;
+        left: 0;
+        height: 4px;
+        background: #121212;
+        transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        z-index: 1;
+        border-radius: 99px;
+      }
+      .eq-node {
+        width: 16px;
+        height: 16px;
+        background: #ffffff;
+        border: 2px solid #d1d5db;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 2;
+        transition: all 0.2s ease;
+        border-radius: 50%;
+      }
+      /* Hover suave en los nodos */
+      .group:hover .eq-node {
+        border-color: #9ca3af;
+      }
+
+      .eq-node.active {
+        background: #0ee19f;
+        border-color: #0ee19f;
+        transform: translateY(-50%) scale(1.2);
+        box-shadow: 0 0 0 4px rgba(14, 225, 159, 0.2);
+      }
+      /* Posiciones exactas */
+      .n1 {
+        left: 0%;
+      }
+      .n2 {
+        left: 25%;
+      }
+      .n3 {
+        left: 50%;
+      }
+      .n4 {
+        left: 75%;
+      }
+      .n5 {
+        left: 100%;
+        margin-left: -16px;
+      }
+
+      .click-layer {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        display: flex;
+      }
+      .click-zone {
+        flex: 1;
       }
 
       .reveal {
         opacity: 0;
         transform: translateY(20px);
-        transition: all 0.8s ease;
+        transition: all 0.8s ease-out;
       }
-      .reveal.active {
+      .reveal.visible {
         opacity: 1;
         transform: translateY(0);
       }
 
-      .tech-card {
-        background-color: #ffffff;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+      .font-tech {
+        font-weight: 100;
+        letter-spacing: 0.15em;
+      }
+
+      /* Estilos para botón deshabilitado */
+      .btn-disabled {
+        background-color: #e5e7eb !important;
+        color: #9ca3af !important;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .desc-box {
         transition: all 0.3s ease;
-      }
-      .tech-card:hover {
-        border-color: rgba(3, 228, 162, 0.5);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      }
-
-      .bg-grid-fixed {
-        background-size: 40px 40px;
-        background-image:
-          linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-      }
-
-      .btn-black {
-        background-color: #000;
-        color: #fff;
-        transition: all 0.3s ease;
-      }
-      .btn-black:hover {
-        background-color: #03e4a2;
-        color: #000;
-      }
-
-      /* Slider Minimalista */
-      input[type="range"] {
-        -webkit-appearance: none;
-        background: transparent;
-      }
-      input[type="range"]::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        height: 14px;
-        width: 14px;
-        border-radius: 50%;
-        background: #000;
-        cursor: pointer;
-        margin-top: -5px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-      }
-      input[type="range"]::-webkit-slider-runnable-track {
-        width: 100%;
-        height: 4px;
-        cursor: pointer;
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 2px;
-      }
-      input[type="range"]:focus {
-        outline: none;
-      }
-
-      .custom-list li {
-        position: relative;
-        padding-left: 1.5em;
-        margin-bottom: 0.8em;
-      }
-      .custom-list li::before {
-        content: "→";
-        position: absolute;
-        left: 0;
-        color: #03e4a2;
-        font-weight: bold;
-        font-size: 14px;
-        top: 5px;
-      }
-
-      /* Estilo para el círculo de progreso */
-      .progress-ring__circle {
-        transition:
-          stroke-dashoffset 1s ease-in-out,
-          stroke 0.3s ease;
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-      }
-
-      ::selection {
-        background: #03e4a2;
-        color: white;
       }
     </style>
   </head>
-  <body class="antialiased bg-void text-text-main font-sans">
-    <!-- CONTROL NOTA (Flotante Desktop Only) -->
-    <div
-      class="fixed bottom-6 right-6 z-[100] hidden md:flex items-center gap-4 bg-white/90 backdrop-blur border border-black/10 px-6 py-3 rounded-sm shadow-2xl transition-all hover:border-black/20"
-    >
-      <span
-        class="text-[10px] font-bold uppercase tracking-widest text-text-muted"
-        >Control Nota</span
-      >
-      <input
-        type="range"
-        id="debug-score-slider"
-        min="5"
-        max="25"
-        value="9"
-        class="w-32"
-      />
-      <span
-        id="debug-score-val"
-        class="font-mono text-sm font-bold text-text-main w-6 text-center"
-        >9</span
-      >
-    </div>
-
-    <!-- TOP BAR -->
-    <header
-      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-border-dim shadow-sm transition-all duration-300"
+  <body class="antialiased">
+    <!-- NAV (Logo Solo) -->
+    <nav
+      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 flex items-center transition-all duration-300"
     >
       <div
-        class="max-w-7xl mx-auto px-6 h-20 md:h-24 flex justify-between items-center"
+        class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center"
       >
         <div class="flex items-center gap-6">
+          <!-- Solo Logo -->
           <img
             src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
-            alt="Unifranz Element Logo"
-            class="h-12 md:h-16 w-auto object-contain transition-all duration-300"
+            alt="Unifranz"
+            class="h-10 md:h-12 w-auto object-contain"
           />
-          <div
-            class="hidden md:flex items-center gap-3 border-l border-gray-200 pl-6 h-8"
-          >
-            <div
-              id="status-indicator"
-              class="w-1.5 h-1.5 bg-warning rounded-full animate-pulse"
-            ></div>
+        </div>
+
+        <a
+          href="#matrix"
+          class="text-[10px] font-bold text-ibm-black tracking-[0.15em] border border-gray-200 px-6 py-2.5 rounded-full hover:bg-ibm-black hover:text-white transition-all uppercase"
+        >
+          Iniciar Diagnóstico
+        </a>
+      </div>
+    </nav>
+
+    <!-- HERO SECTION (Altura Reducida) -->
+    <header
+      class="relative w-full min-h-[85vh] md:min-h-[550px] md:h-[80vh] bg-hero-medical bg-cover bg-center bg-no-repeat mt-20 flex items-start md:items-center"
+    >
+      <div
+        class="absolute inset-0 hero-overlay md:bg-transparent bg-white/95"
+      ></div>
+
+      <div
+        class="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12"
+      >
+        <div class="space-y-6 reveal pt-8 md:pt-0">
+          <div class="flex flex-wrap gap-3">
             <span
-              class="text-[10px] font-bold uppercase tracking-widest text-text-main"
-              >Reporte Generado</span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Centros Hospitalarios</span
             >
             <span
-              class="text-[10px] font-medium uppercase tracking-widest text-text-muted"
-              >ID: #AI-2026-X4</span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Asistencia Operativa</span
+            >
+            <span
+              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Centros de Diagnosticos</span
             >
           </div>
+
+          <div>
+            <h2
+              class="text-xl md:text-2xl font-light text-gray-500 mb-2 leading-relaxed max-w-md"
+            >
+              Proyectos de Inteligencia Artificial <br />
+              <span class="text-ibm-black font-normal"
+                >para el Sector Salud</span
+              >
+            </h2>
+
+            <h1
+              class="text-5xl md:text-2xl lg:text-5xl font-tech text-ibm-black leading-none tracking-wide -ml-1"
+            >
+              DIAGNOSTICO DE<br />
+              <span class="text-custom-blue font-medium tracking-normal"
+                >MADUREZ DIGITAL</span
+              >
+            </h1>
+          </div>
+
+          <!-- MODIFICADO: Ancho aumentado a max-w-2xl -->
+          <p
+            class="text-sm md:text-base text-gray-500 font-light max-w-2xl leading-relaxed"
+          >
+            Antes de invertir en Inteligencia Artificial, necesitas saber
+            exactamente por dónde empezar. Esta herramienta te permite realizar
+            un diagnóstico claro y práctico de la madurez digital de tu
+            institución de salud para identificar y priorizar el primer proyecto
+            de IA que realmente genere impacto. <br />
+            Al finalizar, sabrás con precisión qué proyectos de IA implementar
+            primero para mejorar eficiencia, reducir carga operativa y obtener
+            resultados visibles en tus centros hospitalarios, unidades de
+            diagnóstico y redes de atención ambulatoria.
+          </p>
+
+          <div class="pt-2">
+            <a href="#matrix" class="inline-flex items-center gap-4 group">
+              <div
+                class="h-12 w-12 rounded-full bg-ibm-black text-white flex items-center justify-center group-hover:bg-custom-blue transition-colors shadow-lg"
+              >
+                <svg
+                  class="w-4 h-4 group-hover:translate-y-1 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                  ></path>
+                </svg>
+              </div>
+              <span
+                class="text-xs font-bold uppercase tracking-[0.2em] text-ibm-black group-hover:text-custom-blue transition-colors"
+                >Evaluar Institución</span
+              >
+            </a>
+          </div>
         </div>
-        <a
-          href="#cta"
-          class="hidden md:inline-block text-[10px] font-bold uppercase tracking-widest text-text-main border border-black/10 px-6 py-3 hover:bg-black hover:text-white transition-colors rounded-sm"
-        >
-          Agendar Sesión
-        </a>
+        <div class="hidden lg:block"></div>
       </div>
     </header>
 
-    <!-- SECCIÓN 01: EL DIAGNÓSTICO -->
+    <!-- MATRIX SECTION -->
     <section
-      class="pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-6 border-b border-border-dim relative bg-surface"
+      id="matrix"
+      class="py-8 md:py-16 bg-subtle-gray border-t border-gray-100"
     >
-      <div
-        class="absolute inset-0 bg-grid-fixed pointer-events-none opacity-60"
-      ></div>
-
-      <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid lg:grid-cols-12 gap-8 items-stretch">
-          <!-- Columna Izquierda: Tarjeta de Resultado -->
-          <div class="lg:col-span-4 animate-fade-in-up flex">
-            <div
-              class="tech-card w-full p-6 md:p-10 flex flex-col justify-between items-center relative overflow-hidden rounded-sm bg-white min-h-[500px] md:min-h-[600px]"
+      <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12">
+        <!-- MODIFICADO: Header centrado y texto más ancho -->
+        <div
+          class="mb-12 border-b border-gray-200 pb-8 flex flex-col items-center text-center gap-6 reveal"
+        >
+          <div class="w-full">
+            <h2 class="text-3xl md:text-4xl font-light text-ibm-black mb-4">
+              Herramienta de Diagnóstico
+            </h2>
+            <p
+              class="text-sm text-gray-500 font-light max-w-4xl mx-auto leading-relaxed"
             >
-              <div
-                id="card-glow"
-                class="absolute top-0 right-0 w-64 md:w-80 h-64 md:h-80 bg-warning/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500"
-              ></div>
+              Lee cada pregunta con atención y selecciona un único número del 1
+              al 5 en cada caso. Elige la opción que mejor describa cómo
+              funcionan actualmente los procesos en tu institución, no cómo
+              deberían funcionar ni cómo te gustaría que funcionaran en el
+              futuro. Responde considerando la operación real del día a día,
+              incluyendo los sistemas, los datos, las personas y las prácticas
+              vigentes. Este diagnóstico no evalúa el desempeño, sino que
+              permite identificar con claridad el punto de partida para
+              priorizar proyectos de Inteligencia Artificial de alto impacto.
+              Puedes apoyarte en las descripciones y referencias de cada nivel
+              que aparecen en el cuadro lateral para seleccionar la opción que
+              mejor represente la realidad actual de tu institución. Una vez
+              completado el diagnóstico, presiona “Generar informe” para obtener
+              los resultados.
+            </p>
+          </div>
+        </div>
 
-              <div
-                class="relative z-10 w-full text-center flex flex-col items-center flex-1 justify-center"
-              >
-                <span
-                  class="text-[10px] md:text-xs font-bold uppercase tracking-widest text-text-muted block mb-6 md:mb-8"
-                  >Puntaje de Madurez Digital</span
-                >
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 reveal">
+          <!-- COLUMNA IZQUIERDA: CONTROLES -->
+          <div
+            class="lg:col-span-8 bg-white border border-gray-200 p-6 md:p-10 shadow-soft-xl rounded-sm"
+          >
+            <div class="flex flex-col gap-10">
+              <!-- 1. Sistemas -->
+              <div class="group" onmouseleave="resetPreview('sys')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Sistemas y Tecnología
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Cómo están conectados hoy los sistemas de tu institución?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-sys"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-sys-1"></div>
+                      <div class="eq-node n2" id="node-sys-2"></div>
+                      <div class="eq-node n3" id="node-sys-3"></div>
+                      <div class="eq-node n4" id="node-sys-4"></div>
+                      <div class="eq-node n5" id="node-sys-5"></div>
+
+                      <!-- Capa de Interacción (Hover + Click) -->
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 1)"
+                          onclick="setVal('sys', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 2)"
+                          onclick="setVal('sys', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 3)"
+                          onclick="setVal('sys', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 4)"
+                          onclick="setVal('sys', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('sys', 5)"
+                          onclick="setVal('sys', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-sys"
+                      >1</span
+                    >
+                  </div>
+                </div>
 
                 <div
-                  class="relative w-48 h-48 md:w-64 md:h-64 mb-6 md:mb-8 transition-all duration-300"
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-sys"
                 >
-                  <svg class="w-full h-full" viewBox="0 0 160 160">
+                  <p class="text-sm text-ibm-black italic" id="desc-sys">
+                    Los sistemas no se hablan entre sí y mucho se hace a mano.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 2. Datos -->
+              <div class="group" onmouseleave="resetPreview('data')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Datos e Información
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Qué tan confiable es la información con la que trabajan?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-data"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-data-1"></div>
+                      <div class="eq-node n2" id="node-data-2"></div>
+                      <div class="eq-node n3" id="node-data-3"></div>
+                      <div class="eq-node n4" id="node-data-4"></div>
+                      <div class="eq-node n5" id="node-data-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 1)"
+                          onclick="setVal('data', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 2)"
+                          onclick="setVal('data', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 3)"
+                          onclick="setVal('data', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 4)"
+                          onclick="setVal('data', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('data', 5)"
+                          onclick="setVal('data', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-data"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-data"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-data">
+                    La información está desordenada, incompleta o duplicada.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 3. Reglas -->
+              <div class="group" onmouseleave="resetPreview('rules')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Reglas y Privacidad
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Cómo se gestionan los datos y la toma de decisiones?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-rules"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-rules-1"></div>
+                      <div class="eq-node n2" id="node-rules-2"></div>
+                      <div class="eq-node n3" id="node-rules-3"></div>
+                      <div class="eq-node n4" id="node-rules-4"></div>
+                      <div class="eq-node n5" id="node-rules-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 1)"
+                          onclick="setVal('rules', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 2)"
+                          onclick="setVal('rules', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 3)"
+                          onclick="setVal('rules', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 4)"
+                          onclick="setVal('rules', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('rules', 5)"
+                          onclick="setVal('rules', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-rules"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-rules"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-rules">
+                    No hay reglas claras sobre uso de datos o responsabilidades.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 4. Personas -->
+              <div class="group" onmouseleave="resetPreview('people')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">Personas</h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Con qué tan preparado está el equipo para ejecutar mejoras
+                    con tecnología?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-people"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-people-1"></div>
+                      <div class="eq-node n2" id="node-people-2"></div>
+                      <div class="eq-node n3" id="node-people-3"></div>
+                      <div class="eq-node n4" id="node-people-4"></div>
+                      <div class="eq-node n5" id="node-people-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 1)"
+                          onclick="setVal('people', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 2)"
+                          onclick="setVal('people', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 3)"
+                          onclick="setVal('people', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 4)"
+                          onclick="setVal('people', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('people', 5)"
+                          onclick="setVal('people', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-people"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-people"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-people">
+                    No hay personas dedicadas a datos o mejora digital.
+                  </p>
+                </div>
+              </div>
+
+              <!-- 5. Uso -->
+              <div class="group" onmouseleave="resetPreview('use')">
+                <div class="mb-4">
+                  <h4 class="text-xl font-medium text-ibm-black">
+                    Uso real de IA
+                  </h4>
+                  <p class="text-base text-gray-500 mt-1">
+                    ¿Qué tan avanzada está la institución en el uso práctico de
+                    IA?
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-6">
+                  <div class="flex-grow relative h-10 flex items-center">
+                    <div class="eq-track-container">
+                      <div class="eq-track-bg"></div>
+                      <div
+                        class="eq-fill"
+                        id="fill-use"
+                        style="width: 0%"
+                      ></div>
+                      <div class="eq-node n1 active" id="node-use-1"></div>
+                      <div class="eq-node n2" id="node-use-2"></div>
+                      <div class="eq-node n3" id="node-use-3"></div>
+                      <div class="eq-node n4" id="node-use-4"></div>
+                      <div class="eq-node n5" id="node-use-5"></div>
+
+                      <div class="click-layer">
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 1)"
+                          onclick="setVal('use', 1)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 2)"
+                          onclick="setVal('use', 2)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 3)"
+                          onclick="setVal('use', 3)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 4)"
+                          onclick="setVal('use', 4)"
+                        ></div>
+                        <div
+                          class="click-zone"
+                          onmouseenter="previewVal('use', 5)"
+                          onclick="setVal('use', 5)"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="w-10 text-right">
+                    <span
+                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      id="val-use"
+                      >1</span
+                    >
+                  </div>
+                </div>
+
+                <div
+                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  id="box-use"
+                >
+                  <p class="text-sm text-ibm-black italic" id="desc-use">
+                    No se usa IA; solo se habla del tema.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COLUMNA DERECHA: SCORE -->
+          <div class="lg:col-span-4 sticky top-4 h-fit">
+            <div
+              class="bg-ibm-black text-white p-6 lg:p-10 shadow-2xl relative overflow-hidden rounded-sm flex flex-col justify-between min-h-0 lg:min-h-[500px]"
+            >
+              <div
+                class="absolute inset-0 opacity-10 pointer-events-none"
+                style="
+                  background-image: radial-gradient(
+                    #ffffff 1px,
+                    transparent 1px
+                  );
+                  background-size: 20px 20px;
+                "
+              ></div>
+
+              <div class="relative z-10 text-center mb-6">
+                <span
+                  class="text-[10px] font-bold uppercase tracking-widest text-clinical-teal"
+                  >RESULTADO GLOBAL</span
+                >
+              </div>
+
+              <!-- SCOREBOARD -->
+              <div
+                class="relative z-10 flex flex-col items-center justify-center py-4 lg:py-6"
+              >
+                <div class="relative w-40 h-40 lg:w-64 lg:h-64 mb-4 lg:mb-6">
+                  <svg class="w-full h-full -rotate-90" viewBox="0 0 256 256">
                     <circle
-                      cx="80"
-                      cy="80"
-                      r="70"
-                      stroke="#f3f4f6"
+                      cx="128"
+                      cy="128"
+                      r="110"
+                      stroke="#262626"
                       stroke-width="6"
                       fill="none"
                     ></circle>
                     <circle
                       id="score-circle"
-                      class="progress-ring__circle"
-                      cx="80"
-                      cy="80"
-                      r="70"
-                      stroke="#ff9f2a"
-                      stroke-width="6"
+                      cx="128"
+                      cy="128"
+                      r="110"
+                      stroke="#0ee19f"
+                      stroke-width="10"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-dasharray="440"
-                      stroke-dashoffset="440"
+                      stroke-dasharray="691"
+                      stroke-dashoffset="691"
+                      class="transition-all duration-700 ease-out"
+                      style="
+                        filter: drop-shadow(0 0 15px rgba(14, 225, 159, 0.5));
+                      "
                     ></circle>
                   </svg>
                   <div
                     class="absolute inset-0 flex flex-col items-center justify-center"
                   >
                     <span
-                      id="score-main"
-                      class="text-6xl md:text-8xl font-bold text-text-main tracking-tighter leading-none transition-all duration-300"
-                      >0</span
+                      class="text-5xl lg:text-8xl font-thin tracking-tighter"
+                      id="total-score"
+                      >5</span
                     >
                     <span
-                      class="text-xs md:text-sm text-text-muted font-light mt-1 border-t border-gray-200 px-3 pt-1"
-                      >/ 25</span
+                      class="text-sm text-gray-500 mt-2 uppercase tracking-widest"
+                      >/ 25 Pts</span
                     >
                   </div>
                 </div>
-
-                <div
-                  id="level-badge"
-                  class="inline-block px-5 py-2 md:px-6 md:py-3 bg-warning/10 text-warning text-[10px] md:text-xs font-bold uppercase tracking-widest border border-warning/20 rounded-sm transition-colors duration-300"
+                <h3
+                  class="text-lg lg:text-xl uppercase tracking-[0.15em] text-clinical-teal font-bold mb-2 lg:mb-3 text-center"
+                  id="result-category"
                 >
-                  Calculando...
-                </div>
-              </div>
-
-              <div
-                class="w-full space-y-4 mt-auto relative z-10 pt-6 border-t border-black/5"
-              >
-                <div
-                  id="alert-box"
-                  class="hidden items-center justify-center gap-2 bg-red-50 border border-red-100 p-2 rounded-sm"
-                >
-                  <span
-                    class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"
-                  ></span>
-                  <span
-                    class="text-[9px] font-bold text-red-600 uppercase tracking-wide"
-                    >Atención Requerida</span
-                  >
-                </div>
+                  NIVEL INICIAL
+                </h3>
                 <p
-                  class="text-xs md:text-sm text-text-muted text-center leading-relaxed font-normal px-2"
+                  class="text-xs lg:text-sm text-gray-300 text-center max-w-[280px] leading-relaxed font-light"
+                  id="result-action"
                 >
-                  El puntaje refleja la capacidad actual de su
-                  <strong>Diagnóstico de Madurez Digital</strong> para soportar
-                  proyectos de IA en salud.
+                  Primero hay que ordenar la base
                 </p>
               </div>
-            </div>
-          </div>
 
-          <!-- Columna Derecha: Interpretación y Proyecto -->
-          <div
-            class="lg:col-span-8 flex flex-col gap-6 animate-fade-in-up"
-            style="animation-delay: 0.1s"
-          >
-            <div
-              class="flex flex-col justify-end pb-6 border-b border-black/5 min-h-[auto] md:min-h-[180px]"
-            >
-              <div class="mb-3">
-                <span
-                  class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1 block"
-                  >Diagnóstico Ejecutivo</span
+              <div class="relative z-10 mt-6">
+                <button
+                  onclick="openModal()"
+                  class="w-full py-4 bg-white text-ibm-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-clinical-teal hover:text-ibm-black transition-colors flex items-center justify-center gap-3"
                 >
-                <span
-                  class="text-base md:text-lg font-medium text-text-main block"
-                  >Preparado para: Oscar Agreda</span
-                >
-              </div>
-              <h1
-                class="text-3xl md:text-5xl lg:text-6xl font-light text-text-main mb-4 leading-tight tracking-tight"
-              >
-                <span
-                  id="level-title"
-                  class="block transition-colors duration-300"
-                  >...</span
-                >
-              </h1>
-              <p
-                id="level-quote"
-                class="text-lg md:text-2xl font-light text-text-muted leading-snug max-w-4xl italic transition-all duration-300"
-              >
-                "..."
-              </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 md:gap-8 mb-2">
-              <div
-                class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
-              >
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="h-px w-6 bg-black/20"></div>
-                  <h4
-                    class="text-[10px] font-bold uppercase tracking-widest text-text-main"
-                  >
-                    ¿Qué significa?
-                  </h4>
-                </div>
-                <p
-                  id="level-desc"
-                  class="text-sm md:text-base font-light text-text-muted leading-relaxed"
-                >
-                  ...
-                </p>
-              </div>
-              <div
-                class="bg-white/50 md:bg-transparent p-4 md:p-0 rounded-sm border border-black/5 md:border-none"
-              >
-                <div class="flex items-center gap-3 mb-3">
-                  <div class="h-px w-6 bg-black"></div>
-                  <h4
-                    class="text-[10px] font-bold uppercase tracking-widest text-text-main"
-                  >
-                    Tu Enfoque Ahora
-                  </h4>
-                </div>
-                <p
-                  id="level-focus"
-                  class="text-sm md:text-base font-medium text-text-main leading-relaxed"
-                >
-                  ...
-                </p>
-              </div>
-            </div>
-
-            <!-- Proyecto Recomendado 1x2 -->
-            <div
-              id="project-block"
-              class="tech-card p-6 md:p-10 rounded-sm mt-auto transition-colors duration-500 bg-white border border-border-dim"
-            >
-              <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-stretch">
-                <div
-                  class="flex flex-col justify-start border-r-0 md:border-r border-border-dim md:pr-12"
-                >
-                  <span
-                    class="text-[10px] uppercase tracking-widest text-text-main font-bold block mb-4 border-b border-black/5 pb-2"
-                  >
-                    Proyecto General a Implementar
-                  </span>
-                  <h3
-                    id="project-title"
-                    class="text-xl md:text-2xl font-bold text-text-main leading-snug mb-4"
-                  >
-                    ...
-                  </h3>
-                  <div class="mt-auto pt-4">
-                    <span
-                      class="text-[10px] uppercase tracking-widest text-text-muted block mb-2"
-                      >Impacto Esperado:</span
-                    >
-                    <p
-                      id="project-outcome"
-                      class="text-xs md:text-sm font-bold text-text-main uppercase tracking-wide"
-                    >
-                      ...
-                    </p>
-                  </div>
-                </div>
-                <div
-                  class="flex flex-col justify-start pl-0 md:pl-2 border-t md:border-t-0 border-border-dim pt-6 md:pt-0"
-                >
-                  <span
-                    class="text-[10px] uppercase tracking-widest text-text-muted block mb-4 font-bold opacity-70"
-                  >
-                    Otros Proyectos Sugeridos:
-                  </span>
-                  <ul
-                    id="project-list"
-                    class="text-sm md:text-base text-text-main font-light leading-relaxed custom-list space-y-3"
-                  ></ul>
-                </div>
+                  <span>GENERAR INFORME</span>
+                </button>
               </div>
             </div>
           </div>
@@ -452,288 +787,83 @@ pagina web pre contenido:
       </div>
     </section>
 
-    <!-- SECCIÓN 02: PROMESA -->
-    <section class="py-24 bg-void border-b border-border-dim">
-      <div class="max-w-5xl mx-auto px-6 text-center">
-        <h2
-          class="text-4xl md:text-6xl font-light text-text-main mb-6 tracking-tight leading-tight"
-        >
-          Diseña e implementa un proyecto real de IA <br />
-          <span class="text-neon-dark font-medium"
-            >aplicado a tu institución en 90 días.</span
-          >
-        </h2>
-        <p
-          class="text-lg md:text-xl text-text-muted font-light max-w-3xl mx-auto mb-12"
-        >
-          No aprendas IA sin contexto empresarial. Construye un proyecto
-          ejecutable, alineado a tu operación real, con impacto medible y listo
-          para presentar a dirección.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-left">
-          <div
-            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
-          >
-            <div class="text-neon-dark mt-1">
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold uppercase tracking-wide text-text-main"
-              >Proyecto real, no teoría</span
-            >
-          </div>
-          <div
-            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
-          >
-            <div class="text-neon-dark mt-1">
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold uppercase tracking-wide text-text-main"
-              >Para clínicas y hospitales</span
-            >
-          </div>
-          <div
-            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
-          >
-            <div class="text-neon-dark mt-1">
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold uppercase tracking-wide text-text-main"
-              >Impacto económico visible</span
-            >
-          </div>
-          <div
-            class="flex items-start gap-3 p-4 bg-surface rounded-sm border border-border-dim"
-          >
-            <div class="text-neon-dark mt-1">
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                ></path>
-              </svg>
-            </div>
-            <span
-              class="text-xs font-bold uppercase tracking-wide text-text-main"
-              >Metodología guiada</span
-            >
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 03: IDENTIFICACIÓN (GRID) -->
-    <section class="py-24 bg-surface border-b border-border-dim">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="text-center mb-16">
-          <span
-            class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 block"
-            >Bloque de Identificación</span
-          >
-          <h2 class="text-3xl md:text-4xl font-medium text-text-main">
-            ¿Este programa es para ti?
-          </h2>
-          <p class="text-text-muted mt-4 font-light">
-            Selecciona el escenario que mejor describe tu realidad:
+    <!-- MODAL -->
+    <div
+      id="leadModal"
+      class="fixed inset-0 z-[100] hidden flex items-center justify-center px-4"
+    >
+      <div
+        class="absolute inset-0 bg-ibm-black/90 backdrop-blur-md transition-opacity"
+        onclick="closeModal()"
+      ></div>
+      <div
+        class="bg-white w-full max-w-md p-10 relative z-10 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col rounded-sm border-t-4 border-clinical-teal"
+        id="modalContent"
+      >
+        <div class="mb-8">
+          <h3 class="text-2xl font-light text-ibm-black mb-1">
+            Resultados Listos
+          </h3>
+          <p class="text-xs text-gray-500 uppercase tracking-wide">
+            Ingrese sus datos para ver el informe detallado
           </p>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <!-- Ruta 1 -->
-          <div
-            class="tech-card p-8 rounded-sm hover:-translate-y-1 transition-transform border-t-4 border-t-brand-blue group"
-          >
-            <h4
-              class="text-[10px] font-bold uppercase tracking-widest text-brand-blue mb-4"
+        <form class="space-y-5">
+          <div class="relative z-0 w-full group">
+            <input
+              type="text"
+              id="inputName"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+              required
+              oninput="validateForm()"
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Nombre Completo</label
             >
-              Ruta 1 — Clínicas
-            </h4>
-            <h3 class="text-xl font-bold text-text-main mb-4">
-              Tengo demanda, pero mi operación no escala.
-            </h3>
-            <ul class="space-y-3 mb-8">
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-blue">•</span> Pierdes citas por
-                no-shows
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-blue">•</span> Agenda saturada
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-blue">•</span> Equipo admin al límite
-              </li>
-            </ul>
-            <span
-              class="text-xs font-bold text-text-main group-hover:text-brand-blue transition-colors flex items-center gap-2"
-            >
-              Ver aplicación
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                ></path>
-              </svg>
-            </span>
           </div>
-
-          <!-- Ruta 2 -->
-          <div
-            class="tech-card p-8 rounded-sm hover:-translate-y-1 transition-transform border-t-4 border-t-brand-green group"
-          >
-            <h4
-              class="text-[10px] font-bold uppercase tracking-widest text-brand-green mb-4"
+          <div class="relative z-0 w-full group">
+            <input
+              type="email"
+              id="inputEmail"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+              required
+              oninput="validateForm()"
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Correo</label
             >
-              Ruta 2 — Diagnóstico
-            </h4>
-            <h3 class="text-xl font-bold text-text-main mb-4">
-              La demanda crece más rápido que mi capacidad.
-            </h3>
-            <ul class="space-y-3 mb-8">
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-green">•</span> Cuellos de botella
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-green">•</span> Retrasos en calidad
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-green">•</span> Variabilidad difícil
-              </li>
-            </ul>
-            <span
-              class="text-xs font-bold text-text-main group-hover:text-brand-green transition-colors flex items-center gap-2"
-            >
-              Ver aplicación
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                ></path>
-              </svg>
-            </span>
           </div>
-
-          <!-- Ruta 3 -->
-          <div
-            class="tech-card p-8 rounded-sm hover:-translate-y-1 transition-transform border-t-4 border-t-brand-red group"
-          >
-            <h4
-              class="text-[10px] font-bold uppercase tracking-widest text-brand-red mb-4"
+          <div class="relative z-0 w-full group">
+            <input
+              type="tel"
+              id="inputPhone"
+              class="block py-3 px-0 w-full text-sm text-ibm-black bg-transparent border-0 border-b border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-clinical-teal peer"
+              placeholder=" "
+            />
+            <label
+              class="peer-focus:font-medium absolute text-sm text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-clinical-teal peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >Número Telefónico</label
             >
-              Ruta 3 — Hospitales
-            </h4>
-            <h3 class="text-xl font-bold text-text-main mb-4">
-              La operación se volvió insostenible.
-            </h3>
-            <ul class="space-y-3 mb-8">
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-red">•</span> Burnout creciente
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-red">•</span> Carga administrativa
-                excesiva
-              </li>
-              <li class="flex gap-3 text-sm text-text-muted font-light">
-                <span class="text-brand-red">•</span> Presión financiera
-              </li>
-            </ul>
-            <span
-              class="text-xs font-bold text-text-main group-hover:text-brand-red transition-colors flex items-center gap-2"
-            >
-              Ver aplicación
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                ></path>
-              </svg>
-            </span>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 04: PROBLEMA (Alto Contraste) -->
-    <section class="py-24 bg-text-main text-white relative overflow-hidden">
-      <div class="absolute top-0 right-0 p-12 opacity-5">
-        <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24">
-          <path
-            d="M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2"
-          ></path>
-        </svg>
-      </div>
-      <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <div
-          class="inline-flex items-center gap-2 border border-white/20 px-4 py-2 rounded-full mb-8"
+          <button
+            type="button"
+            id="btnSubmit"
+            onclick="goToResults()"
+            class="w-full py-4 text-white text-xs font-bold uppercase tracking-widest transition-all mt-6 btn-disabled"
+          >
+            Descargar Informe
+          </button>
+        </form>
+        <button
+          onclick="closeModal()"
+          class="absolute top-4 right-4 text-gray-300 hover:text-ibm-black transition-colors"
         >
           <svg
-            class="w-4 h-4 text-warning"
+            class="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -742,644 +872,225 @@ pagina web pre contenido:
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
-              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              d="M6 18L18 6M6 6l12 12"
             ></path>
           </svg>
-          <span
-            class="text-[10px] font-bold uppercase tracking-widest text-white"
-            >Problema Transversal</span
-          >
+        </button>
+      </div>
+    </div>
+
+    <!-- FOOTER SIMPLE -->
+    <footer class="bg-white border-t border-gray-200 py-12">
+      <div
+        class="max-w-[1400px] mx-auto px-6 lg:px-12 flex flex-col md:flex-row justify-between items-center gap-6"
+      >
+        <div class="flex items-center gap-4">
+          <img
+            src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
+            class="h-24 w-auto grayscale"
+            alt="Unifranz"
+          />
+          <span class="text-[10px] text-gray-400">© 2026</span>
         </div>
-        <h2 class="text-3xl md:text-5xl font-light mb-8">
-          El problema no es la IA.<br />
-          <span class="font-bold">Es no saber implementarla.</span>
-        </h2>
-        <p class="text-lg text-gray-400 font-light mb-10 leading-relaxed">
-          La mayoría de iniciativas fracasan porque no están conectadas a un
-          problema real, no entran en el flujo operativo y se quedan en ideas.
-          <br /><span class="text-white font-medium"
-            >Resultado: tiempo perdido y dinero desperdiciado.</span
-          >
-        </p>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 05: SOLUCIÓN Y RUTAS (Feature Grid) -->
-    <section class="py-24 bg-void border-b border-border-dim">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="grid lg:grid-cols-12 gap-16 mb-20">
-          <div class="lg:col-span-4">
-            <span
-              class="text-neon-dark font-bold text-[10px] uppercase tracking-[0.3em] mb-4 block"
-              >Mi Proyecto de IA</span
-            >
-            <h2 class="text-4xl font-light text-text-main mb-6 leading-tight">
-              Diseñado para implementar.
-            </h2>
-            <p class="text-sm text-text-muted leading-relaxed mb-8">
-              Un programa práctico donde construyes paso a paso un proyecto
-              real, aplicado a tu institución. Aquí tomas decisiones y
-              construyes soluciones.
-            </p>
-            <a
-              href="#cta"
-              class="inline-block px-8 py-4 btn-black text-xs font-bold uppercase tracking-widest rounded-sm"
-            >
-              Empezar Proyecto
-            </a>
-          </div>
-
-          <div class="lg:col-span-8 grid gap-6">
-            <!-- Card Clinica -->
-            <div
-              class="border border-border-dim p-8 rounded-sm hover:shadow-lg transition-shadow bg-surface/30"
-            >
-              <div class="flex items-start gap-4 mb-4">
-                <div
-                  class="w-8 h-8 rounded-full bg-brand-blue/10 text-brand-blue flex items-center justify-center shrink-0"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    ></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    class="text-sm font-bold uppercase tracking-wide text-brand-blue mb-2"
-                  >
-                    Para Clínicas / Ambulatorio
-                  </h4>
-                  <h3 class="text-lg font-bold text-text-main mb-2">
-                    Recuperar ingresos y escalar atención.
-                  </h3>
-                  <p class="text-sm text-text-muted font-light mb-4">
-                    Automatización de agenda, triage automatizado y
-                    estandarización de historias.
-                  </p>
-                  <div class="flex gap-4 text-xs font-medium text-text-main">
-                    <span>✓ Menos no-shows</span>
-                    <span>✓ ROI rápido</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Diagnostico -->
-            <div
-              class="border border-border-dim p-8 rounded-sm hover:shadow-lg transition-shadow bg-surface/30"
-            >
-              <div class="flex items-start gap-4 mb-4">
-                <div
-                  class="w-8 h-8 rounded-full bg-brand-green/10 text-brand-green flex items-center justify-center shrink-0"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                    ></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    class="text-sm font-bold uppercase tracking-wide text-brand-green mb-2"
-                  >
-                    Para Diagnóstico
-                  </h4>
-                  <h3 class="text-lg font-bold text-text-main mb-2">
-                    Aumentar productividad sin ampliar plantilla.
-                  </h3>
-                  <p class="text-sm text-text-muted font-light mb-4">
-                    Lectura asistida, control de calidad y priorización
-                    inteligente.
-                  </p>
-                  <div class="flex gap-4 text-xs font-medium text-text-main">
-                    <span>✓ Menores tiempos</span>
-                    <span>✓ Uso eficiente de talento</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card Hospitales -->
-            <div
-              class="border border-border-dim p-8 rounded-sm hover:shadow-lg transition-shadow bg-surface/30"
-            >
-              <div class="flex items-start gap-4 mb-4">
-                <div
-                  class="w-8 h-8 rounded-full bg-brand-red/10 text-brand-red flex items-center justify-center shrink-0"
-                >
-                  <svg
-                    class="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    ></path>
-                  </svg>
-                </div>
-                <div>
-                  <h4
-                    class="text-sm font-bold uppercase tracking-wide text-brand-red mb-2"
-                  >
-                    Para Hospitales
-                  </h4>
-                  <h3 class="text-lg font-bold text-text-main mb-2">
-                    Aliviar carga administrativa y proteger ingresos.
-                  </h3>
-                  <p class="text-sm text-text-muted font-light mb-4">
-                    Documentación asistida, revenue cycle y optimización de
-                    flujos.
-                  </p>
-                  <div class="flex gap-4 text-xs font-medium text-text-main">
-                    <span>✓ Menos burnout</span>
-                    <span>✓ Control financiero</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="flex gap-6 text-[10px] uppercase font-bold text-gray-500">
+          <a href="#" class="hover:text-ibm-black">Privacidad</a>
+          <a href="#" class="hover:text-ibm-black">Términos de Uso</a>
+          <a href="#" class="hover:text-ibm-black">Contacto</a>
         </div>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 06: RESULTADO FUNCIONAL -->
-    <section class="py-24 bg-surface border-b border-border-dim">
-      <div class="max-w-4xl mx-auto px-6 text-center">
-        <span
-          class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4 block"
-          >Resultado Funcional</span
-        >
-        <h2 class="text-3xl md:text-5xl font-light text-text-main mb-12">
-          Al finalizar, no tienes ideas. <br />
-          <span class="font-normal">Tienes un proyecto listo.</span>
-        </h2>
-
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
-          <div
-            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
-          >
-            <div class="text-neon-dark mb-3">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                ></path>
-              </svg>
-            </div>
-            <h4 class="font-bold text-text-main mb-2">Documento Completo</h4>
-            <p class="text-xs text-text-muted">
-              20–25 páginas con el plan detallado.
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
-          >
-            <div class="text-neon-dark mb-3">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-                ></path>
-              </svg>
-            </div>
-            <h4 class="font-bold text-text-main mb-2">
-              Presentación Ejecutiva
-            </h4>
-            <p class="text-xs text-text-muted">
-              Lista para comité o dirección.
-            </p>
-          </div>
-          <div
-            class="bg-white p-6 rounded-sm border border-border-dim shadow-sm"
-          >
-            <div class="text-neon-dark mb-3">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                ></path>
-              </svg>
-            </div>
-            <h4 class="font-bold text-text-main mb-2">Métricas Claras</h4>
-            <p class="text-xs text-text-muted">KPIs de impacto definidos.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 07: EXPERTA Y DETALLES -->
-    <section class="py-24 bg-void border-b border-border-dim">
-      <div class="max-w-7xl mx-auto px-6">
-        <div class="grid lg:grid-cols-2 gap-16 items-start">
-          <!-- Columna Izquierda: Experta -->
-          <div>
-            <span
-              class="text-xs font-bold uppercase tracking-widest text-text-muted mb-6 block"
-              >Dirección Académica</span
-            >
-            <h2 class="text-4xl font-light text-text-main mb-8">
-              Ruta de implementación real.
-            </h2>
-            <p class="text-text-muted leading-relaxed mb-8">
-              Esto no es un curso. Es una metodología aplicada: Aprende – Aplica
-              – Avanza. Con acompañamiento real y casos de instituciones de
-              salud.
-            </p>
-
-            <div
-              class="flex gap-6 items-center mb-8 bg-surface p-6 rounded-sm border border-border-dim"
-            >
-              <div
-                class="w-20 h-24 bg-gray-200 shrink-0 overflow-hidden rounded-sm"
-              >
-                <img
-                  src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/e627f8e7982907ed650e22e58e919309.png"
-                  class="w-full h-full object-cover filter grayscale"
-                />
-              </div>
-              <div>
-                <h4 class="font-bold text-text-main">Elisa Martin</h4>
-                <p
-                  class="text-xs text-neon-dark font-bold uppercase tracking-wide mb-2"
-                >
-                  IBM Health Ecosystem Director
-                </p>
-                <p class="text-xs text-text-muted">
-                  Miembro IBM Academy of Technology.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Columna Derecha: Datos Clave (Ticket Style) -->
-          <div>
-            <div
-              class="bg-text-main text-white p-8 rounded-sm shadow-2xl relative overflow-hidden"
-            >
-              <div class="absolute top-0 right-0 p-6 opacity-10">
-                <svg
-                  class="w-32 h-32"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="1"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-              </div>
-              <h3 class="text-xl font-bold mb-6 border-b border-white/20 pb-4">
-                Detalles del Programa
-              </h3>
-
-              <div class="space-y-6 relative z-10">
-                <div>
-                  <span
-                    class="text-[10px] uppercase tracking-widest text-gray-400 block mb-1"
-                    >Próxima Fecha</span
-                  >
-                  <p class="text-lg font-medium">
-                    28 de enero – 17 de marzo, 2026
-                  </p>
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <span
-                      class="text-[10px] uppercase tracking-widest text-gray-400 block mb-1"
-                      >Duración</span
-                    >
-                    <p class="text-base">6 semanas</p>
-                  </div>
-                  <div>
-                    <span
-                      class="text-[10px] uppercase tracking-widest text-gray-400 block mb-1"
-                      >Compromiso</span
-                    >
-                    <p class="text-base">6–8 horas/semana</p>
-                  </div>
-                </div>
-                <div>
-                  <span
-                    class="text-[10px] uppercase tracking-widest text-gray-400 block mb-1"
-                    >Matrícula</span
-                  >
-                  <p class="text-3xl font-bold text-neon">
-                    $1,500
-                    <span class="text-sm font-light text-gray-400">USD</span>
-                  </p>
-                </div>
-              </div>
-
-              <div class="mt-8 pt-6 border-t border-white/20">
-                <div class="flex items-center gap-3">
-                  <img
-                    src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
-                    class="h-4 filter invert opacity-50"
-                  />
-                  <span
-                    class="text-[10px] uppercase tracking-widest text-gray-400"
-                    >Certificación Ejecutiva</span
-                  >
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- 8. CTA FINAL -->
-    <section
-      id="cta"
-      class="py-40 bg-surface border-t border-border-dim relative overflow-hidden"
-    >
-      <div class="max-w-3xl mx-auto text-center px-6 relative z-10">
-        <span
-          class="text-xs font-bold uppercase tracking-widest text-warning mb-4 block"
-          >Urgencia Real</span
-        >
-        <h2
-          class="text-5xl md:text-7xl font-light text-text-main mb-8 tracking-tight"
-        >
-          Cada mes que no actúas, <br />
-          <span class="font-bold">el costo sigue creciendo.</span>
-        </h2>
-        <p
-          class="text-text-muted text-lg leading-relaxed mb-12 font-light max-w-xl mx-auto"
-        >
-          Si no implementas ahora, pierdes la ventana presupuestaria y mantienes
-          la presión operativa. Actuar hoy es dejar de perder.
-        </p>
-        <a
-          href="#"
-          class="inline-block px-14 py-7 btn-black font-bold text-sm uppercase tracking-[0.2em] rounded-sm shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
-        >
-          Agendar una Cita
-        </a>
-      </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bg-void border-t border-border-dim py-16 px-6 text-center">
-      <div class="max-w-7xl mx-auto">
-        <img
-          src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
-          alt="Unifranz Logo"
-          class="h-8 w-auto mx-auto mb-8 opacity-50 grayscale"
-        />
-        <p class="text-xs text-text-muted font-bold uppercase tracking-widest">
-          © 2026 Unifranz Executive Education. Health Intelligence Unit.
-        </p>
       </div>
     </footer>
 
-    <!-- LÓGICA DINÁMICA -->
+    <!-- LOGIC -->
     <script>
-      const levels = {
-        inicial: {
-          label: "Nivel INICIAL",
-          colorText: "text-danger",
-          bgBadge: "bg-red-50 text-red-600 border-red-200",
-          hexColor: "#ff4b4b",
-          glowColor: "bg-red-500/10",
-          bgProject: "bg-red-50/20 border-red-100",
-          quote: "“Ordenar antes de automatizar”",
-          desc: "Tu institución se parece a la mayoría de los prestadores ambulatorios pequeños o fragmentados. Existe presión por eficiencia, pero la información está dispersa. El error común es querer “hacer IA” sin una base clara.",
-          focus:
-            "Ganar orden, claridad operativa y una base de datos confiable para empezar a decidir mejor.",
-          projectTitle:
-            "Proyecto 1 — Elabora un proyecto de IA para estructurar la información operativa",
-          projectList: [
-            "Unificar datos básicos de pacientes, citas y procesos",
-            "Ordenar información que hoy está repartida en planillas",
-            "Preparar la base para futuros proyectos de IA",
-          ],
-          outcome: "Datos confiables y listos para IA.",
-          alert: true,
-        },
-        basico: {
-          label: "Nivel BÁSICO",
-          colorText: "text-warning",
-          bgBadge: "bg-orange-50 text-orange-600 border-orange-200",
-          hexColor: "#ff9f2a",
-          glowColor: "bg-warning/10",
-          bgProject: "bg-orange-50/20 border-orange-100",
-          quote: "“Reducir fricción y demostrar valor rápido”",
-          desc: "Encajas con redes de clínicas con alto volumen. El dolor principal es la agenda y las inasistencias. Aquí la IA empieza a impactar ingresos y eficiencia.",
-          focus:
-            "Reducir pérdidas invisibles y mejorar la experiencia del paciente sin complejidad técnica.",
-          projectTitle:
-            "Proyecto 2 — Elabora un proyecto de IA para optimizar la gestión de agenda",
-          projectList: [
-            "Predecir inasistencias y reorganizar agendas",
-            "Activar recordatorios inteligentes",
-            "Mejorar uso del tiempo clínico",
-          ],
-          outcome: "Más consultas atendidas.",
-          alert: true,
-        },
-        intermedio: {
-          label: "Nivel INTERMEDIO",
-          colorText: "text-yellow-600",
-          bgBadge: "bg-yellow-50 text-yellow-600 border-yellow-200",
-          hexColor: "#ca8a04",
-          glowColor: "bg-yellow-500/10",
-          bgProject: "bg-yellow-50/20 border-yellow-100",
-          quote: "“IA aplicada donde los datos ya existen”",
-          desc: "Te pareces a centros de diagnóstico. Hay datos y volumen. La IA encaja naturalmente. El foco ya no es ordenar, sino priorizar y acelerar.",
-          focus:
-            "Usar IA para mejorar tiempos de respuesta, calidad y productividad del equipo.",
-          projectTitle:
-            "Proyecto 3 — Elabora un proyecto de IA para priorización y apoyo en diagnóstico",
-          projectList: [
-            "Priorizar estudios urgentes",
-            "Apoyar la lectura inicial",
-            "Reducir tiempos de entrega",
-          ],
-          outcome: "Más productividad instalada.",
-          alert: true,
-        },
-        avanzado: {
-          label: "Nivel AVANZADO",
-          colorText: "text-neon-dark",
-          bgBadge: "bg-emerald-50 text-emerald-600 border-emerald-200",
-          hexColor: "#00c48a",
-          glowColor: "bg-emerald-500/10",
-          bgProject: "bg-emerald-50/20 border-emerald-100",
-          quote: "“Resolver el gran dolor operativo”",
-          desc: "Encajas con hospitales medianos. El dolor es burnout y carga administrativa. Aquí la IA ya no es opcional: es una herramienta de gestión.",
-          focus:
-            "Liberar tiempo clínico y mejorar eficiencia sin aumentar recursos.",
-          projectTitle:
-            "Proyecto 4 — Elabora un proyecto de IA para reducir la carga administrativa",
-          projectList: [
-            "Documentación clínica asistida",
-            "Codificación y autorizaciones",
-            "Mejora del flujo de información",
-          ],
-          outcome: "Menos burnout, mayor eficiencia.",
-          alert: false,
-        },
-        lider: {
-          label: "Nivel LÍDER",
-          colorText: "text-neon",
-          bgBadge: "bg-neon/10 text-neon-dark border-neon/20",
-          hexColor: "#03e4a2",
-          glowColor: "bg-neon/10",
-          bgProject: "bg-neon/10 border-neon/20",
-          quote: "“IA como ventaja estratégica”",
-          desc: "Te pareces a aseguradores o grandes redes. El foco está en riesgo y gestión poblacional. La IA ya forma parte de la estrategia.",
-          focus: "Usar IA para anticipar, controlar y liderar.",
-          projectTitle:
-            "Proyecto 5 — Elabora un proyecto de IA para vigilancia y toma de decisiones",
-          projectList: [
-            "Detectar riesgos tempranos",
-            "Analizar grandes volúmenes de datos",
-            "Apoyar decisiones de alto impacto",
-          ],
-          outcome: "Control estratégico y liderazgo.",
-          alert: false,
-        },
+      const matrixData = {
+        sys: [
+          "Los sistemas no se hablan entre sí y mucho se hace a mano.",
+          "Tenemos un sistema principal, pero con poca conexión a otros.",
+          "Algunos sistemas están conectados, no todos, y no siempre funciona bien.",
+          "La mayoría de los sistemas están conectados y la información fluye.",
+          "Los sistemas están bien integrados y la información está casi en tiempo real.",
+        ],
+        data: [
+          "La información está desordenada, incompleta o duplicada.",
+          "Hay información usable, pero requiere mucho trabajo manual.",
+          "La información es bastante ordenada y se revisa periódicamente.",
+          "La información es confiable, clara y se controla su calidad.",
+          "La información está lista para usarse en análisis avanzados o IA.",
+        ],
+        rules: [
+          "No hay reglas claras sobre uso de datos o responsabilidades.",
+          "Hay reglas básicas de privacidad, pero no siempre se siguen.",
+          "Existen responsables y reglas claras para usar la información.",
+          "Las reglas se aplican de forma consistente y se revisan con frecuencia.",
+          "Hay controles claros, ética definida y confianza en el uso de tecnología.",
+        ],
+        people: [
+          "No hay personas dedicadas a datos o mejora digital.",
+          "Hay interés, pero falta experiencia y tiempo asignado.",
+          "Existen personas responsables y apoyo externo si es necesario.",
+          "Hay un equipo interno con roles claros y apoyo directivo.",
+          "El equipo puede diseñar, probar e implementar soluciones de forma continua.",
+        ],
+        use: [
+          "No se usa IA; solo se habla del tema.",
+          "Se han hecho pruebas pequeñas sin impacto real.",
+          "Hay soluciones funcionando en algunas áreas.",
+          "Varias áreas usan IA con resultados medidos.",
+          "La IA está integrada al trabajo diario y genera valor claro.",
+        ],
       };
 
-      const ui = {
-        scoreMain: document.getElementById("score-main"),
-        scoreCircle: document.getElementById("score-circle"),
-        levelBadge: document.getElementById("level-badge"),
-        levelTitle: document.getElementById("level-title"),
-        levelQuote: document.getElementById("level-quote"),
-        levelDesc: document.getElementById("level-desc"),
-        levelFocus: document.getElementById("level-focus"),
-        projectBlock: document.getElementById("project-block"),
-        projectTitle: document.getElementById("project-title"),
-        projectList: document.getElementById("project-list"),
-        projectOutcome: document.getElementById("project-outcome"),
-        cardGlow: document.getElementById("card-glow"),
-        indicator: document.getElementById("status-indicator"),
-        alertBox: document.getElementById("alert-box"),
-        slider: document.getElementById("debug-score-slider"),
-        valDisplay: document.getElementById("debug-score-val"),
-      };
+      const currentScores = { sys: 1, data: 1, rules: 1, people: 1, use: 1 };
 
-      function updateDashboard(score) {
-        let data = null;
-
-        if (score <= 9) data = levels.inicial;
-        else if (score <= 14) data = levels.basico;
-        else if (score <= 18) data = levels.intermedio;
-        else if (score <= 22) data = levels.avanzado;
-        else data = levels.lider;
-
-        // Score & Badge
-        ui.scoreMain.innerText = score;
-        ui.levelBadge.className = `inline-block px-5 py-2 md:px-6 md:py-3 text-[10px] md:text-xs font-bold uppercase tracking-widest border rounded-sm transition-colors duration-300 ${data.bgBadge}`;
-        ui.levelBadge.innerText = data.label;
-
-        // Circle Animation (Circumference ~440)
-        const maxOffset = 440;
-        const percentage = score / 25;
-        const newOffset = maxOffset - maxOffset * percentage;
-        ui.scoreCircle.style.strokeDashoffset = newOffset;
-        ui.scoreCircle.style.stroke = data.hexColor;
-
-        // Alert Indicator Logic
-        if (data.alert) {
-          ui.alertBox.classList.remove("hidden");
-          ui.alertBox.classList.add("flex");
-        } else {
-          ui.alertBox.classList.add("hidden");
-          ui.alertBox.classList.remove("flex");
-        }
-
-        // Texts
-        ui.levelTitle.innerHTML = `<span class="${data.colorText}">${data.label}</span>`;
-        ui.levelQuote.innerText = data.quote;
-        ui.levelDesc.innerText = data.desc;
-        ui.levelFocus.innerText = data.focus;
-
-        // Project Block
-        ui.projectBlock.className = `tech-card p-6 md:p-10 rounded-sm mt-auto transition-colors duration-500 border border-border-dim ${data.bgProject}`;
-        ui.projectTitle.innerText = data.projectTitle;
-        ui.projectList.innerHTML = data.projectList
-          .map((item) => `<li>${item}</li>`)
-          .join("");
-        ui.projectOutcome.innerText = data.outcome;
-
-        // Glow Effect
-        ui.cardGlow.className = `absolute top-0 right-0 w-64 md:w-80 h-64 md:h-80 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500 ${data.glowColor}`;
-
-        // Status Indicator (Nav)
-        if (ui.indicator) {
-          if (score > 22) {
-            // Lider Case override
-            ui.indicator.className = `w-1.5 h-1.5 rounded-full animate-pulse bg-neon`;
-          } else {
-            ui.indicator.className = `w-1.5 h-1.5 rounded-full animate-pulse ${data.barColor ? data.barColor.replace("bg-", "bg-") : "bg-gray-400"}`;
-          }
-        }
+      function setVal(dim, val) {
+        currentScores[dim] = val;
+        updateVisuals(dim, val, false);
+        calculateTotal();
       }
 
-      ui.slider.addEventListener("input", (e) => {
-        const val = parseInt(e.target.value);
-        ui.valDisplay.innerText = val;
-        updateDashboard(val);
-      });
+      // Función para previsualizar sin guardar
+      function previewVal(dim, val) {
+        updateVisuals(dim, val, true);
+      }
 
-      // Init
-      updateDashboard(9);
+      // Función para restaurar el valor guardado
+      function resetPreview(dim) {
+        updateVisuals(dim, currentScores[dim], false);
+      }
 
-      // Scroll Animation
+      function updateVisuals(dim, val, isPreview) {
+        let width =
+          val === 2
+            ? "25%"
+            : val === 3
+              ? "50%"
+              : val === 4
+                ? "75%"
+                : val === 5
+                  ? "100%"
+                  : "0%";
+        document.getElementById(`fill-${dim}`).style.width = width;
+
+        for (let i = 1; i <= 5; i++) {
+          const node = document.getElementById(`node-${dim}-${i}`);
+          if (i <= val) node.classList.add("active");
+          else node.classList.remove("active");
+        }
+
+        const numEl = document.getElementById(`val-${dim}`);
+        numEl.innerText = val;
+
+        // Estilos visuales para indicar "Preview" vs "Selected"
+        if (isPreview) {
+          numEl.classList.remove("text-gray-300");
+          numEl.classList.add("text-clinical-teal");
+          document
+            .getElementById(`box-${dim}`)
+            .classList.replace("border-gray-200", "border-clinical-teal");
+        } else {
+          numEl.classList.add("text-gray-300");
+          numEl.classList.remove("text-clinical-teal");
+          document
+            .getElementById(`box-${dim}`)
+            .classList.replace("border-clinical-teal", "border-gray-200");
+        }
+
+        // Actualizar texto descriptivo
+        const desc = document.getElementById(`desc-${dim}`);
+        if (desc) desc.innerText = matrixData[dim][val - 1];
+      }
+
+      function calculateTotal() {
+        const values = Object.values(currentScores);
+        const total = values.reduce((a, b) => a + b, 0);
+        let category = "NIVEL INICIAL",
+          action = "Primero hay que ordenar la base";
+        if (total >= 10 && total <= 14) {
+          category = "NIVEL BÁSICO";
+          action = "Se puede empezar con pilotos simples";
+        } else if (total >= 15 && total <= 18) {
+          category = "NIVEL INTERMEDIO";
+          action = "Listo para proyectos reales";
+        } else if (total >= 19 && total <= 22) {
+          category = "NIVEL AVANZADO";
+          action = "Preparado para escalar";
+        } else if (total >= 23) {
+          category = "NIVEL LÍDER";
+          action = "IA integrada al negocio";
+        }
+
+        document.getElementById("total-score").innerText = total;
+        document.getElementById("result-category").innerText = category;
+        document.getElementById("result-action").innerText = action;
+
+        // Circle math: Radius 110 -> Circumference 2 * pi * 110 ≈ 691
+        const maxOffset = 691;
+        document.getElementById("score-circle").style.strokeDashoffset =
+          maxOffset - Math.max(0, (total - 5) / 20) * maxOffset;
+      }
+
+      function validateForm() {
+        const name = document.getElementById("inputName").value.trim();
+        const email = document.getElementById("inputEmail").value.trim();
+        const btn = document.getElementById("btnSubmit");
+        if (name !== "" && email !== "") {
+          btn.classList.remove("btn-disabled");
+          btn.classList.add("bg-ibm-black", "hover:bg-gray-800");
+        } else {
+          btn.classList.add("btn-disabled");
+          btn.classList.remove("bg-ibm-black", "hover:bg-gray-800");
+        }
+      }
+      function openModal() {
+        const m = document.getElementById("leadModal"),
+          c = document.getElementById("modalContent");
+        m.classList.remove("hidden");
+        setTimeout(() => {
+          c.classList.remove("scale-95", "opacity-0");
+          c.classList.add("scale-100", "opacity-100");
+        }, 10);
+      }
+      function closeModal() {
+        const m = document.getElementById("leadModal"),
+          c = document.getElementById("modalContent");
+        c.classList.remove("scale-100", "op acity-100");
+        c.classList.add("scale-95", "opacity-0");
+        setTimeout(() => m.classList.add("hidden"), 300);
+      }
+
+      function goToResults() {
+        const name = document.getElementById("inputName").value.trim();
+        const email = document.getElementById("inputEmail").value.trim();
+        const phone = document.getElementById("inputPhone").value.trim();
+
+        if (name === "" || email === "") return;
+
+        // Guardar datos en localStorage para usar en resultado.html
+        localStorage.setItem(
+          "clinicalNexusData",
+          JSON.stringify({
+            name: name,
+            email: email,
+            phone: phone,
+            scores: currentScores,
+            totalScore: document.getElementById("total-score").innerText,
+          }),
+        );
+
+        // Redirigir a resultado.html
+        window.location.href = "resultado.html";
+      }
+
+      // Inicialización
+      ["sys", "data", "rules", "people", "use"].forEach((dim) =>
+        updateVisuals(dim, 1, false),
+      );
+      calculateTotal();
+
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("active");
-            }
+            if (entry.isIntersecting) entry.target.classList.add("visible");
           });
         },
         { threshold: 0.1 },
