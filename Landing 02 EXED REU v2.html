@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unifranz EXED | Reporte Estratégico</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              neon: "#71dade",
+              "neon-dark": "#0097a7", 
+              "level-1": "#e0f7fa", 
+              "level-2": "#b2ebf2", 
+              "level-3": "#71dade", 
+              "level-4": "#4cb5c5", 
+              "level-5": "#0097a7", 
+              "expert-neon": "#16dd95",
+              "expert-dark": "#131313",
+              void: "#ffffff",
+              surface: "#f8f9fa",
+              "text-main": "#18181b",
+              "text-muted": "#52525b",
+            },
+            fontFamily: { sans: ['"Archivo"', "sans-serif"] },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* --- Throbber con Transición de Desplazamiento (Cortina) --- */
+      #loader-wrapper {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        /* Cambio a slide-up en lugar de fade */
+        transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        transform: translateY(0);
+      }
+      
+      #loader-wrapper.loader-hidden {
+        transform: translateY(-100%);
+      }
+
+      .throbber-svg { width: 120px; height: auto; }
+      .throbber-gris { fill: #58595b; }
+      .throbber-rojo { fill: #a42328; animation: energy-flow 1.5s ease-in-out infinite; }
+      
+      @keyframes energy-flow {
+        0% { fill: #a42328; }
+        30% { fill: #ff4d4d; }
+        100% { fill: #a42328; }
+      }
+      #barra-superior { animation-delay: 0s; }
+      #barra-media { animation-delay: 0.2s; }
+      #barra-inferior { animation-delay: 0.4s; }
+
+      /* --- Animación de Revelado de Contenido --- */
+      .reveal-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 1s ease, transform 1s ease;
+      }
+      .reveal-section.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      body { background-color: #ffffff; color: #18181b; font-family: "Archivo", sans-serif; overflow-x: hidden; }
+      .tech-card { background-color: #ffffff; border: 1px solid rgba(0, 0, 0, 0.08); transition: all 0.3s ease; }
+      .bg-grid-fixed { background-size: 40px 40px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px); }
+      .progress-ring__circle { transition: stroke-dashoffset 0.8s ease-in-out, stroke 0.5s ease; transform: rotate(-90deg); transform-origin: 50% 50%; }
+      
+      #test-control {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 50;
+        background: white;
+        padding: 16px;
+        border: 1px solid #000;
+        box-shadow: 8px 8px 0px rgba(0,0,0,0.1);
+        border-radius: 2px;
+      }
+
+      .dots-bg {
+        background-image: radial-gradient(#16dd95 1.5px, transparent 1.5px);
+        background-size: 32px 32px; 
+        opacity: 0.15;
+      }
+
+      /* --- Controles de Video Personalizados --- */
+      .video-wrapper {
+        position: relative;
+        width: 100%;
+        padding-top: 56.25%;
+        background: #000;
+      }
+      .video-wrapper iframe {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        pointer-events: none;
+      }
+      .video-controls-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.5) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 20px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 10;
+      }
+      .video-wrapper:hover .video-controls-overlay { opacity: 1; }
+      .video-wrapper:active .video-controls-overlay { opacity: 1; }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background: rgba(255,255,255,0.2);
+        cursor: pointer;
+        margin-bottom: 15px;
+        position: relative;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: #16dd95;
+        width: 0%;
+        transition: width 0.1s linear;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+
+    <!-- LOADING SCREEN -->
+    <div id="loader-wrapper">
+      <svg class="throbber-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 425.4 471.06">
+        <g>
+          <rect id="barra-media" class="throbber-rojo" x="88.47" y="95.7" width="102.72" height="279.67" transform="translate(375.36 95.7) rotate(90)"/>
+          <rect id="barra-inferior" class="throbber-rojo" x="161.34" y="207" width="102.72" height="425.4" transform="translate(632.4 207) rotate(90)"/>
+          <rect id="barra-superior" class="throbber-rojo" x="255.11" y="-67.57" width="102.72" height="237.85" transform="translate(357.83 -255.11) rotate(90)"/>
+          <rect class="throbber-gris" width="102.72" height="102.72"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- PANEL DE CONTROL (Simulador) -->
+    <div id="test-control" class="hidden lg:flex flex-col gap-3">
+      <div class="flex flex-col">
+        <span class="text-[9px] font-bold uppercase tracking-widest text-text-muted mb-2">Simulador de Diagnóstico</span>
+        <input type="range" id="score-range" min="0" max="25" value="9" class="w-40 h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-neon">
+      </div>
+      <div class="flex justify-between items-center text-[10px] font-bold uppercase">
+        <span>Resultado: <span id="range-val" class="text-neon-dark">9</span></span>
+      </div>
+    </div>
+    
+    <!-- TOP BAR -->
+    <header class="fixed top-0 w-full z-40 bg-white/95 backdrop-blur-md border-b border-black/5">
+      <div class="max-w-7xl mx-auto px-4 md:px-6 h-20 md:h-24 flex justify-between items-center">
+        <div class="flex items-center gap-4 md:gap-8">
+          <img src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png" alt="Unifranz Logo" class="h-8 md:h-12 w-auto object-contain" />
+          <div class="h-8 w-px bg-black/10 hidden sm:block"></div>
+          <div class="flex flex-col">
+            <span class="text-[11px] md:text-sm font-bold text-text-main uppercase tracking-tight leading-none">Resultado para:</span>
+            <span class="text-sm md:text-base font-bold text-neon-dark">Andres Salinas</span>
+          </div>
+        </div>
+        <a href="#cta" class="hidden md:inline-block text-[10px] font-bold uppercase tracking-widest border border-black/10 px-6 py-3 hover:bg-black hover:text-white transition-all rounded-sm">AGENDAR CITA</a>
+      </div>
+    </header>
+
+    <!-- SECCIÓN 01: EL DIAGNÓSTICO -->
+    <section id="hero-section" class="reveal-section pt-32 pb-16 md:pt-40 md:pb-24 px-4 md:px-6 border-b border-border-dim relative bg-surface">
+      <div class="absolute inset-0 bg-grid-fixed pointer-events-none opacity-40"></div>
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid lg:grid-cols-12 gap-8 items-stretch">
+          
+          <div class="lg:col-span-4 flex w-full">
+            <div class="tech-card w-full p-6 md:p-10 flex flex-col justify-between items-center relative overflow-hidden rounded-sm bg-white min-h-[450px] md:min-h-[500px]">
+              <div id="card-glow" class="absolute top-0 right-0 w-80 h-80 bg-level-1 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500"></div>
+              
+              <div class="relative z-10 w-full text-center flex flex-col items-center flex-1 justify-center">
+                <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-6 md:mb-8">Puntaje de Madurez Digital</span>
+                
+                <div class="relative w-48 h-48 md:w-56 md:h-56 mb-6 md:mb-8">
+                  <svg class="w-full h-full" viewBox="0 0 160 160">
+                    <circle cx="80" cy="80" r="70" stroke="#f3f4f6" stroke-width="4" fill="none"></circle>
+                    <circle id="score-circle" class="progress-ring__circle" cx="80" cy="80" r="70" stroke="#71dade" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="440" stroke-dashoffset="440"></circle>
+                  </svg>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center">
+                    <span id="score-display" class="text-6xl md:text-7xl font-bold text-text-main tracking-tighter">0</span>
+                    <span class="text-xs text-text-muted font-light mt-1 border-t border-gray-200 px-3 pt-1">/ 25</span>
+                  </div>
+                </div>
+                
+                <div id="level-badge" class="inline-block px-5 py-2 bg-level-1 text-level-5 text-[10px] font-bold uppercase tracking-widest border border-level-1/50 rounded-sm transition-all duration-300">
+                  Cargando...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-8 flex flex-col gap-6">
+            <div class="pb-6 border-b border-black/5 text-center lg:text-left">
+              <span class="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-1 block">Diagnóstico Ejecutivo</span>
+              <h1 id="level-title" class="text-2xl md:text-5xl font-light text-text-main mb-3 md:mb-4 leading-tight"></h1>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              <div class="space-y-2">
+                <h4 class="text-[10px] font-bold uppercase tracking-widest text-text-main flex items-center gap-2">
+                  <span class="w-4 h-px bg-neon"></span> Tu situación actual
+                </h4>
+                <p id="level-desc" class="text-sm md:text-base font-light text-text-muted leading-relaxed"></p>
+              </div>
+              <div class="space-y-2">
+                <h4 class="text-[10px] font-bold uppercase tracking-widest text-text-main flex items-center gap-2">
+                  <span class="w-4 h-px bg-black"></span> Por qué este proyecto ahora
+                </h4>
+                <p id="level-why" class="text-sm md:text-base font-light text-text-muted leading-relaxed"></p>
+              </div>
+            </div>
+
+            <div id="project-block" class="tech-card p-6 md:p-8 rounded-sm mt-auto bg-white border border-border-dim relative overflow-hidden">
+              <span class="text-[10px] uppercase tracking-widest text-neon-dark font-bold block mb-4 border-b border-black/5 pb-2">Proyecto de IA recomendado</span>
+              <h3 id="project-title" class="text-lg md:text-2xl font-bold text-text-main mb-3 italic"></h3>
+              <p id="project-detail" class="text-sm md:text-base text-text-muted mb-6 leading-relaxed"></p>
+              
+              <div id="level-fact" class="bg-surface p-4 text-[11px] md:text-xs italic border-l-2 border-neon mb-6"></div>
+              
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-t border-black/5 pt-6">
+                <div class="max-w-md">
+                  <span class="text-[10px] uppercase tracking-widest text-text-muted block mb-1">Siguiente paso recomendado:</span>
+                  <p id="level-next" class="text-xs md:text-sm font-bold text-text-main"></p>
+                </div>
+                <a href="#cta" class="w-full md:w-auto text-center px-8 py-4 bg-black text-white text-[10px] font-bold uppercase tracking-widest hover:bg-neon hover:text-black transition-all rounded-sm shadow-md">AGENDAR CITA</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN EXPERTA -->
+    <section class="py-16 md:py-24 bg-expert-dark text-white relative overflow-hidden">
+      <div class="absolute inset-0 dots-bg pointer-events-none"></div>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-5">
+            <div class="relative aspect-[4/5] overflow-hidden border border-white/5 grayscale hover:grayscale-0 transition-all duration-1000 group max-w-sm mx-auto lg:max-w-none">
+              <img src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/e627f8e7982907ed650e22e58e919309.png" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" alt="Elisa Martín Garijo">
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <span class="inline-block py-1 px-3 border border-expert-neon text-expert-neon text-[10px] font-bold uppercase tracking-[0.2em] mb-6">NUESTRA EXPERTA</span>
+            <h2 class="text-4xl md:text-7xl font-light mb-4 leading-none">Elisa Martín <br class="hidden md:block"><span class="font-bold">Garijo</span></h2>
+            <p class="text-lg md:text-xl text-expert-neon font-medium mb-8">IA aplicada a decisiones clínicas y gestión sanitaria real</p>
+            <div class="space-y-6 text-base md:text-lg text-gray-400 font-light border-l-2 border-expert-neon pl-6 md:pl-8">
+              <p>Elisa Martín Garijo es matemática y una de las referentes europeas en la aplicación de inteligencia artificial en salud, con una trayectoria centrada en convertir tecnología avanzada en soluciones utilizables dentro de sistemas sanitarios reales.</p>
+              <p>Tras liderar durante años la estrategia de innovación e IA en IBM para varios países europeos, ha enfocado su trabajo en casos de alto impacto clínico.</p>
+              <p class="text-white font-medium italic text-base">Aprenderás con una experta que ya ha llevado la IA a la práctica clínica real.</p>
+            </div>
+            <button onclick="openModal()" class="mt-8 md:mt-10 flex items-center gap-4 group">
+              <div class="w-14 h-14 md:w-16 md:h-16 border border-expert-neon flex items-center justify-center group-hover:bg-expert-neon group-hover:text-black transition-all">
+                <svg class="w-6 h-6 ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              </div>
+              <span class="text-[10px] md:text-xs font-bold uppercase tracking-widest group-hover:text-expert-neon transition-colors">Ver introducción de la experta</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN CTA -->
+    <section id="cta" class="py-20 md:py-32 bg-surface border-t border-black/5 text-center px-6">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl md:text-6xl font-light mb-6 md:mb-8 tracking-tight leading-tight">Cada mes que no actúas,<br><span class="font-bold">el costo sigue creciendo.</span></h2>
+        <p class="text-text-muted text-base md:text-lg font-light leading-relaxed mb-10 md:mb-12">Si no implementas IA ahora, pierdes la ventana presupuestaria y mantienes la presión operativa. Actuar hoy es dejar de perder.</p>
+        <a href="#" class="inline-block w-full md:w-auto px-14 py-6 bg-black text-white font-bold text-sm uppercase tracking-widest hover:bg-neon hover:text-black transition-all rounded-sm shadow-xl text-center">AGENDAR CITA</a>
+      </div>
+    </section>
+
+    <footer class="py-12 bg-white text-center border-t border-black/5">
+      <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-text-muted opacity-60">© 2026 Unifranz Executive Education for health</p>
+    </footer>
+
+    <!-- VIDEO MODAL -->
+    <div id="videoModal" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-black/95 backdrop-blur-md px-4">
+      <div class="relative w-full max-w-4xl bg-black shadow-2xl overflow-hidden rounded-sm border border-white/10 group">
+        <button onclick="closeModal()" class="absolute top-2 right-4 z-50 text-white font-bold text-2xl hover:text-neon transition-colors p-2">✕</button>
+        
+        <div class="video-wrapper" id="video-wrapper">
+          <div id="videoContainer"></div>
+          
+          <div class="video-controls-overlay" id="custom-controls">
+            <div class="progress-bar-container" id="progress-container">
+              <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-6">
+                <button id="play-pause-btn" class="text-white hover:text-expert-neon transition-colors">
+                  <svg id="play-icon" class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  <svg id="pause-icon" class="w-7 h-7 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <div class="text-[11px] font-mono text-white/90 uppercase tracking-widest">
+                  <span id="current-time">0:00</span> / <span id="duration-time">0:00</span>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-6">
+                <button id="mute-btn" class="text-white hover:text-expert-neon transition-colors">
+                  <svg id="vol-on-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                  <svg id="vol-off-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                </button>
+                <button id="fullscreen-btn" class="text-white hover:text-expert-neon transition-colors">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 1. Throbber logic con nueva transición
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          const loader = document.getElementById('loader-wrapper');
+          const hero = document.getElementById('hero-section');
+          if (loader) {
+            loader.classList.add('loader-hidden');
+            // Revelar contenido después de que el loader suba
+            setTimeout(() => {
+               if(hero) hero.classList.add('active');
+            }, 300);
+          }
+        }, 2200);
+      });
+
+      // 2. Base de Datos
+      const levels = {
+        inicial: {
+          label: "Nivel INICIAL", title: "Ordenar antes de automatizar",
+          desc: "Hoy te toca hacer milagros con información fragmentada: planillas, sistemas aislados, versiones distintas del mismo dato. Esa falta de orden te genera frustración, te quita tiempo, complica cualquier decisión.",
+          why: "Si esta base no se define en el primer trimestre (Q1), el resto de iniciativas anuales quedarán en el aire y sin datos sólidos no tendrás respaldo para tus stakeholder. En un estudio sobre un sistema hospitalario, alrededor de 25% de los datos resultaron no utilizables para análisis por problemas de calidad.",
+          project: "Agente de IA para estructuración de información operativa",
+          detail: "Un agente que te ayuda a unificar datos clave (pacientes, citas, procesos), además de dejar una base confiable para decidir sin discutir números.",
+          fact: "Cuando tus datos no son confiables, tus decisiones tampoco lo son. Ordenar ahora es el primer paso para sostenerse ante dirección.",
+          next: "Agenda una entrevista con nuestro asesor de desarrollo de proyectos y obtén un roadmap defendible para ejecutar este trimestre.",
+          color: "#71dade", score: 9
+        },
+        basico: {
+          label: "Nivel BÁSICO", title: "Reducir fricción y recuperar valor",
+          desc: "La operación se desarrolla correctamente, pero tú ves el desgaste observas agendas desordenadas, inasistencias, reprogramaciones, llamadas repetidas. Eso se traduce en pérdidas que casi nunca aparecen en un reporte, pero tú las sientes cada semana.",
+          why: "En promedio, 1 de cada 4 pacientes no asiste a su cita. Si no lo corriges este problema en el trimestre, pierdes horas clínicas cada semana y aumentas el retrabajo del equipo.",
+          project: "Optimización inteligente de agenda",
+          detail: "IA para predecir inasistencias, disparar recordatorios inteligentes (SMS/WhatsApp/call), priorizar confirmaciones, además de reorganizar turnos con reglas simples.",
+          fact: "Dato: Recuperar ingresos perdidos por ausentismo es la forma más rápida de demostrar ROI en salud.",
+          next: "Agenda una entrevista y obtén el inicio de un roadmap de impacto rápido para reducir no-shows y mejorar la ocupación.",
+          color: "#71dade", score: 14
+        },
+        intermedio: {
+          label: "Nivel INTERMEDIO", title: "IA donde ya hay datos",
+          desc: "Tú ya tienes datos, tienes volumen, tienes presión por productividad. El problema no es recolectar esta en priorizar lo correcto para que el servicio responda más rápido sin exigir más horas al equipo.",
+          why: "Cuando integras IA de priorización en el flujo, puedes recortar tiempos de respuesta de forma tangible. En un estudio de triage para hallazgos urgentes, el turnaround time bajó alrededor de 32% en periodos de alta carga.",
+          project: "IA para priorización clínica y aceleración diagnóstica",
+          detail: "IA aplicada a ordenar urgencias, alertar casos críticos, acelerar lecturas iniciales, reducir tiempos de entrega, sin cambiar tu estructura actual.",
+          fact: "Eficiencia: Si no lo defines este trimestre (Q1), seguirás resolviendo problemas día a día sin lograr una mejora estable.",
+          next: "Agenda una entrevista y obtienes el inicio de tu roadmap aplicado para priorización con IA y métricas claras.",
+          color: "#71dade", score: 18
+        },
+        avanzado: {
+          label: "Nivel AVANZADO", title: "Resolver el gran dolor operativo",
+          desc: "Tú lo ves directo, la carga administrativa se come el día, el equipo se desgasta, la coordinación entre áreas se vuelve fricción constante. No es “falta de ganas” es exceso de tareas que drenan capacidad clínica.",
+          why: "La carga documental es enorme, en un estudio clásico en práctica ambulatoria mostró que los médicos dedicaron cerca de 49% del tiempo a EHR/trabajo de escritorio. Si no intervienes en el primer trimestre (Q1), el desgaste se consolidará.",
+          project: "Reducción de carga administrativa clínica con IA",
+          detail: "IA para documentación, validaciones, extracción de datos, flujos entre áreas clínicas–administrativas, reduciendo reprocesos, tiempos muertos.",
+          fact: "Prevención: Evita el aumento de riesgo de fuga de talento y baja de calidad estabilizando la operación con IA.",
+          next: "Agenda una entrevista y descubre como iniciar un roadmap realista para liberar tiempo clínico con IA y sostener al equipo.",
+          color: "#0097a7", score: 22
+        },
+        lider: {
+          label: "Nivel LÍDER", title: "IA como ventaja estratégica",
+          desc: "Decides sobre riesgo y costos a gran escala. Necesitas IA para anticipar escenarios y sostener decisiones con datos confiables.",
+          why: "La presión sobre el personal ya es alta, encuestas recientes indican que alrededor del 54% de los médicos se siente en burnout. Definir esto en Q1 te permite actuar antes de que el desgaste escale.",
+          project: "Vigilancia, alerta temprana y soporte a decisión con IA",
+          detail: "IA para detectar riesgos de forma temprana, estratificar población, identificar patrones críticos y apoyar decisiones de alto impacto antes de que los problemas escalen.",
+          fact: "Estrategia: El liderazgo con anticipación mediante IA predictiva te permite controlar y liderar la red sanitaria.",
+          next: "Agenda una entrevista y convierte esta recomendación en una iniciativa prioritaria, alineada a objetivos institucionales.",
+          color: "#0097a7", score: 25
+        }
+      };
+
+      // 3. UI logic
+      const scoreRange = document.getElementById('score-range');
+      const scoreDisplay = document.getElementById('score-display');
+      const rangeVal = document.getElementById('range-val');
+      const circle = document.getElementById('score-circle');
+      const levelBadge = document.getElementById('level-badge');
+      const levelTitle = document.getElementById('level-title');
+      const levelDesc = document.getElementById('level-desc');
+      const levelWhy = document.getElementById('level-why');
+      const projectTitle = document.getElementById('project-title');
+      const projectDetail = document.getElementById('project-detail');
+      const levelFact = document.getElementById('level-fact');
+      const levelNext = document.getElementById('level-next');
+      const cardGlow = document.getElementById('card-glow');
+
+      function updateUI(score) {
+        let data;
+        if (score <= 9) data = levels.inicial;
+        else if (score <= 14) data = levels.basico;
+        else if (score <= 18) data = levels.intermedio;
+        else if (score <= 22) data = levels.avanzado;
+        else data = levels.lider;
+
+        scoreDisplay.innerText = score;
+        rangeVal.innerText = score;
+        levelBadge.innerText = data.label;
+        levelTitle.innerText = data.title;
+        levelDesc.innerText = data.desc;
+        levelWhy.innerText = data.why;
+        projectTitle.innerText = data.project;
+        projectDetail.innerText = data.detail;
+        levelFact.innerText = data.fact;
+        levelNext.innerText = data.next;
+
+        const offset = 440 - (440 * (score / 25));
+        circle.style.strokeDashoffset = offset;
+        circle.style.stroke = data.color;
+        
+        levelBadge.className = (score > 18) 
+          ? "inline-block px-5 py-2 bg-level-5/10 text-level-5 text-[10px] font-bold uppercase tracking-widest border border-level-5/20 rounded-sm transition-all duration-300"
+          : "inline-block px-5 py-2 bg-level-1 text-level-5 text-[10px] font-bold uppercase tracking-widest border border-level-1/50 rounded-sm transition-all duration-300";
+          
+        cardGlow.className = (score > 18)
+          ? "absolute top-0 right-0 w-80 h-80 bg-level-5/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500"
+          : "absolute top-0 right-0 w-80 h-80 bg-level-1 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-colors duration-500";
+      }
+
+      if (scoreRange) scoreRange.addEventListener('input', (e) => updateUI(parseInt(e.target.value)));
+
+      // 4. Video Logic
+      let player;
+      let isPlaying = false;
+      let isMuted = false;
+
+      function openModal() {
+        const modal = document.getElementById('videoModal');
+        const container = document.getElementById('videoContainer');
+        modal.classList.remove('hidden');
+        
+        const videoId = "851013035";
+        container.innerHTML = `<iframe id="vimeo-player" src="https://player.vimeo.com/video/${videoId}?autoplay=1&api=1&controls=0&muted=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>`;
+        
+        player = new Vimeo.Player(document.getElementById('vimeo-player'));
+        
+        player.on('play', () => {
+          isPlaying = true;
+          document.getElementById('play-icon').classList.add('hidden');
+          document.getElementById('pause-icon').classList.remove('hidden');
+        });
+
+        player.on('pause', () => {
+          isPlaying = false;
+          document.getElementById('play-icon').classList.remove('hidden');
+          document.getElementById('pause-icon').classList.add('hidden');
+        });
+
+        player.on('timeupdate', (data) => {
+          const percent = (data.percent * 100).toFixed(2);
+          document.getElementById('progress-fill').style.width = percent + '%';
+          document.getElementById('current-time').innerText = formatTime(data.seconds);
+        });
+
+        player.getDuration().then(duration => {
+          document.getElementById('duration-time').innerText = formatTime(duration);
+        });
+
+        player.setVolume(1);
+        isMuted = false;
+
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        if (player) {
+          player.unload();
+        }
+        document.getElementById('videoModal').classList.add('hidden');
+        document.getElementById('videoContainer').innerHTML = '';
+        document.body.style.overflow = 'auto';
+      }
+
+      function formatTime(secs) {
+        const mins = Math.floor(secs / 60);
+        const s = Math.floor(secs % 60);
+        return `${mins}:${s < 10 ? '0' : ''}${s}`;
+      }
+
+      document.getElementById('play-pause-btn').addEventListener('click', () => {
+        if (isPlaying) player.pause(); else player.play();
+      });
+
+      document.getElementById('mute-btn').addEventListener('click', () => {
+        isMuted = !isMuted;
+        player.setMuted(isMuted);
+        document.getElementById('vol-on-icon').classList.toggle('hidden', isMuted);
+        document.getElementById('vol-off-icon').classList.toggle('hidden', !isMuted);
+      });
+
+      document.getElementById('fullscreen-btn').addEventListener('click', () => {
+        const container = document.getElementById('video-wrapper');
+        if (container.requestFullscreen) {
+          container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+          container.webkitRequestFullscreen();
+        } else if (container.mozRequestFullScreen) {
+          container.mozRequestFullScreen();
+        } else if (container.msRequestFullscreen) {
+          container.msRequestFullscreen();
+        }
+      });
+
+      document.getElementById('progress-container').addEventListener('click', (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const pos = (e.clientX - rect.left) / rect.width;
+        player.getDuration().then(duration => {
+          player.setCurrentTime(duration * pos);
+        });
+      });
+
+      document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(); });
+
+      updateUI(9);
+    </script>
+  </body>
+</html>

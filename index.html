@@ -18,15 +18,16 @@
           extend: {
             colors: {
               "ibm-black": "#121212",
-              "clinical-teal": "#0ee19f",
-              "clinical-teal-dark": "#00b67a",
-              "custom-blue": "#71dade", // Color turquesa claro para título y hover
+              "clinical-teal": "#7cdee3",
+              "clinical-teal-dark": "#5bbbc0",
+              "custom-blue": "#7cdee3",
               "light-gray": "#f4f4f4",
               "subtle-gray": "#f8fafc",
               "border-gray": "#e2e8f0",
             },
             fontFamily: {
               sans: ['"Archivo"', "sans-serif"],
+              tech: ['"Archivo"', "sans-serif"],
             },
             backgroundImage: {
               "hero-medical":
@@ -34,6 +35,8 @@
             },
             boxShadow: {
               "soft-xl": "0 20px 40px -10px rgba(0, 0, 0, 0.05)",
+              glass: "0 8px 32px 0 rgba(124, 222, 227, 0.15)",
+              sharp: "6px 6px 0px 0px rgba(18, 18, 18, 1)",
             },
           },
         },
@@ -51,58 +54,67 @@
       .hero-overlay {
         background: linear-gradient(
           90deg,
-          #ffffff 15%,
-          rgba(255, 255, 255, 0.92) 50%,
-          rgba(255, 255, 255, 0.1) 100%
+          #ffffff 20%,
+          rgba(255, 255, 255, 0.95) 60%,
+          rgba(255, 255, 255, 0.2) 100%
         );
       }
 
-      /* Estilos Ecualizador */
+      @media (max-width: 768px) {
+        .hero-overlay {
+          background: linear-gradient(
+            180deg,
+            #ffffff 40%,
+            rgba(255, 255, 255, 0.95) 80%,
+            rgba(255, 255, 255, 0.6) 100%
+          );
+        }
+      }
+
       .eq-track-container {
         position: relative;
-        height: 32px;
+        height: 40px;
         display: flex;
         align-items: center;
         cursor: pointer;
         width: 100%;
+        padding: 0 10px;
       }
       .eq-track-bg {
         position: absolute;
-        width: 100%;
-        height: 2px;
+        left: 0;
+        right: 0;
+        height: 1px;
         background: #e5e7eb;
-        border-radius: 99px;
       }
       .eq-fill {
         position: absolute;
         left: 0;
         height: 4px;
         background: #121212;
-        transition: width 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         z-index: 1;
-        border-radius: 99px;
       }
       .eq-node {
         width: 16px;
         height: 16px;
         background: #ffffff;
-        border: 2px solid #d1d5db;
+        border: 1px solid #9ca3af;
         position: absolute;
         top: 50%;
-        transform: translateY(-50%);
+        transform: translate(-50%, -50%);
         z-index: 2;
         transition: all 0.2s ease;
-        border-radius: 50%;
+        border-radius: 0;
       }
       .group:hover .eq-node {
-        border-color: #9ca3af;
+        border-color: #4b5563;
       }
-
       .eq-node.active {
-        background: #0ee19f;
-        border-color: #0ee19f;
-        transform: translateY(-50%) scale(1.2);
-        box-shadow: 0 0 0 4px rgba(14, 225, 159, 0.2);
+        background: #7cdee3;
+        border-color: #7cdee3;
+        transform: translate(-50%, -50%) scale(1.3);
+        box-shadow: 0 0 0 4px rgba(124, 222, 227, 0.2);
       }
       .n1 {
         left: 0%;
@@ -118,7 +130,6 @@
       }
       .n5 {
         left: 100%;
-        margin-left: -16px;
       }
 
       .click-layer {
@@ -141,26 +152,19 @@
         transform: translateY(0);
       }
 
-      .font-tech {
-        font-weight: 100;
-        letter-spacing: 0.15em;
-      }
-
       .btn-disabled {
         background-color: #e5e7eb !important;
         color: #9ca3af !important;
         cursor: not-allowed;
         pointer-events: none;
-      }
-      .desc-box {
-        transition: all 0.3s ease;
+        box-shadow: none !important;
       }
     </style>
   </head>
   <body class="antialiased">
     <!-- NAV -->
     <nav
-      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 flex items-center transition-all duration-300"
+      class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 h-20 md:h-24 flex items-center transition-all duration-300"
     >
       <div
         class="w-full max-w-[1400px] mx-auto px-6 lg:px-12 flex justify-between items-center"
@@ -169,87 +173,71 @@
           <img
             src="https://lwfiles.mycourse.app/642b6d2acebaa1e2ab377d62-public/fe9b6c34b868242ab32dcf945a2c0c26.png"
             alt="Unifranz"
-            class="h-10 md:h-12 w-auto object-contain"
+            class="h-10 md:h-16 w-auto object-contain"
           />
         </div>
-
         <a
           href="#matrix"
-          class="text-[10px] font-bold text-ibm-black tracking-[0.15em] border border-gray-200 px-6 py-2.5 rounded-full hover:bg-ibm-black hover:text-white transition-all uppercase"
+          class="text-[9px] md:text-[10px] font-bold text-ibm-black tracking-[0.15em] border border-gray-900 px-4 py-3 md:px-8 md:py-4 hover:bg-ibm-black hover:text-white transition-all uppercase rounded-none"
         >
           Iniciar Diagnóstico
         </a>
       </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    <!-- HERO -->
     <header
-      class="relative w-full min-h-[85vh] md:min-h-[550px] md:h-[80vh] bg-hero-medical bg-cover bg-center bg-no-repeat mt-20 flex items-start md:items-center"
+      class="relative w-full min-h-[90vh] md:min-h-[550px] md:h-[85vh] bg-hero-medical bg-cover bg-center bg-no-repeat mt-20 md:mt-24 flex items-center"
     >
       <div
         class="absolute inset-0 hero-overlay md:bg-transparent bg-white/95"
       ></div>
-
       <div
         class="relative z-10 w-full max-w-[1400px] mx-auto px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12"
       >
-        <div class="space-y-6 reveal pt-8 md:pt-0">
-          <div class="flex flex-wrap gap-3">
+        <div class="space-y-6 md:space-y-8 reveal pt-12 md:pt-0">
+          <div class="flex flex-wrap gap-2 md:gap-3">
             <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              class="bg-white/80 border border-gray-200 px-2 py-1 md:px-3 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
               >Centros Hospitalarios</span
             >
             <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              class="bg-white/80 border border-gray-200 px-2 py-1 md:px-3 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
               >Asistencia Operativa</span
             >
             <span
-              class="bg-white/80 border border-gray-100 px-3 py-1 text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
-              >Centros de Diagnosticos</span
+              class="bg-white/80 border border-gray-200 px-2 py-1 md:px-3 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] text-gray-500 backdrop-blur-sm"
+              >Centros de Diagnósticos</span
             >
           </div>
 
           <div>
-            <h2
-              class="text-xl md:text-2xl font-light text-gray-500 mb-2 leading-relaxed max-w-md"
-            >
-              Proyectos de Inteligencia Artificial <br />
-              <span class="text-ibm-black font-normal"
-                >para el Sector Salud</span
-              >
-            </h2>
-
             <h1
-              class="text-5xl md:text-6xl lg:text-6xl font-tech text-ibm-black leading-none tracking-wide -ml-1"
+              class="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-tech text-ibm-black leading-[1.05] tracking-tight font-bold -ml-1 mb-4 max-w-4xl"
             >
-              DIAGNOSTICO DE<br />
-              <span class="text-custom-blue font-medium tracking-normal"
-                >MADUREZ DIGITAL</span
-              >
+              DIAGNÓSTICO DE<br />
+              <span class="text-custom-blue">MADUREZ DIGITAL</span>
             </h1>
+            <p
+              class="text-base md:text-lg text-gray-600 font-light leading-relaxed border-l-4 border-custom-blue pl-4 md:pl-6 max-w-2xl"
+            >
+              Antes de invertir en Inteligencia Artificial, necesitas saber
+              exactamente por dónde empezar. Responde 5 preguntas y obtén
+              claridad sobre el primer proyecto de IA con mayor impacto en tu
+              institución de salud.
+            </p>
           </div>
 
-          <p
-            class="text-sm md:text-base text-gray-500 font-light max-w-2xl leading-relaxed"
-          >
-            Antes de invertir en Inteligencia Artificial, necesitas saber
-            exactamente por dónde empezar. Esta herramienta te permite realizar
-            un diagnóstico claro y práctico de la madurez digital de tu
-            institución de salud para identificar y priorizar el primer proyecto
-            de IA que realmente genere impacto. <br />
-            Al finalizar, sabrás con precisión qué proyectos de IA implementar
-            primero para mejorar eficiencia, reducir carga operativa y obtener
-            resultados visibles en tus centros hospitalarios, unidades de
-            diagnóstico y redes de atención ambulatoria.
-          </p>
-
-          <div class="pt-2">
-            <a href="#matrix" class="inline-flex items-center gap-4 group">
+          <div class="pt-4">
+            <a
+              href="#matrix"
+              class="inline-flex items-center gap-4 md:gap-6 group w-full md:w-auto"
+            >
               <div
-                class="h-12 w-12 rounded-full bg-ibm-black text-white flex items-center justify-center group-hover:bg-custom-blue transition-colors shadow-lg"
+                class="h-14 w-14 md:h-16 md:w-16 bg-ibm-black text-white flex items-center justify-center group-hover:bg-custom-blue group-hover:text-ibm-black transition-colors rounded-none flex-shrink-0"
               >
                 <svg
-                  class="w-4 h-4 group-hover:translate-y-1 transition-transform"
+                  class="w-5 h-5 md:w-6 md:h-6 group-hover:translate-x-1 transition-transform"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -258,12 +246,12 @@
                     stroke-linecap="round"
                     stroke-linejoin="round"
                     stroke-width="2"
-                    d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
                   ></path>
                 </svg>
               </div>
               <span
-                class="text-xs font-bold uppercase tracking-[0.2em] text-ibm-black group-hover:text-custom-blue transition-colors"
+                class="text-xs md:text-sm font-bold uppercase tracking-[0.15em] text-ibm-black group-hover:text-custom-blue transition-colors text-left"
               >
                 Evaluar Institución
               </span>
@@ -277,7 +265,7 @@
     <!-- MATRIX SECTION -->
     <section
       id="matrix"
-      class="py-8 md:py-16 bg-subtle-gray border-t border-gray-100"
+      class="py-8 md:py-24 bg-white border-t border-gray-200"
     >
       <div class="w-full max-w-[1400px] mx-auto px-6 lg:px-12">
         <div
@@ -291,30 +279,19 @@
               class="text-sm text-gray-500 font-light max-w-4xl mx-auto leading-relaxed"
             >
               Lee cada pregunta con atención y selecciona un único número del 1
-              al 5 en cada caso. Elige la opción que mejor describa cómo
-              funcionan actualmente los procesos en tu institución, no cómo
-              deberían funcionar ni cómo te gustaría que funcionaran en el
-              futuro. Responde considerando la operación real del día a día,
-              incluyendo los sistemas, los datos, las personas y las prácticas
-              vigentes. Este diagnóstico no evalúa el desempeño, sino que
-              permite identificar con claridad el punto de partida para
-              priorizar proyectos de Inteligencia Artificial de alto impacto.
-              Puedes apoyarte en las descripciones y referencias de cada nivel
-              que aparecen en el cuadro lateral para seleccionar la opción que
-              mejor represente la realidad actual de tu institución. Una vez
-              completado el diagnóstico, presiona “Generar informe” para obtener
-              los resultados.
+              al 5. Elige la opción que mejor describa la realidad actual de tu
+              institución (no cómo debería ser).
             </p>
           </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 reveal">
-          <!-- COLUMNA IZQUIERDA: CONTROLES -->
+          <!-- Controles -->
           <div
-            class="lg:col-span-8 bg-white border border-gray-200 p-6 md:p-10 shadow-soft-xl rounded-sm"
+            class="lg:col-span-8 bg-white border border-gray-200 p-6 md:p-10"
           >
             <div class="flex flex-col gap-10">
-              <!-- Sistemas -->
+              <!-- 1. Sistemas -->
               <div class="group" onmouseleave="resetPreview('sys')">
                 <div class="mb-4">
                   <h4 class="text-xl font-medium text-ibm-black">
@@ -324,7 +301,6 @@
                     ¿Cómo están conectados hoy los sistemas de tu institución?
                   </p>
                 </div>
-
                 <div class="flex items-center gap-6">
                   <div class="flex-grow relative h-10 flex items-center">
                     <div class="eq-track-container">
@@ -339,7 +315,6 @@
                       <div class="eq-node n3" id="node-sys-3"></div>
                       <div class="eq-node n4" id="node-sys-4"></div>
                       <div class="eq-node n5" id="node-sys-5"></div>
-
                       <div class="click-layer">
                         <div
                           class="click-zone"
@@ -371,15 +346,14 @@
                   </div>
                   <div class="w-10 text-right">
                     <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      class="text-2xl font-light text-gray-300 transition-colors duration-200"
                       id="val-sys"
                       >1</span
                     >
                   </div>
                 </div>
-
                 <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  class="mt-2 p-4 bg-subtle-gray border-l-4 border-gray-200 transition-colors duration-300 rounded-none"
                   id="box-sys"
                 >
                   <p class="text-sm text-ibm-black italic" id="desc-sys">
@@ -388,7 +362,7 @@
                 </div>
               </div>
 
-              <!-- Datos -->
+              <!-- 2. Datos -->
               <div class="group" onmouseleave="resetPreview('data')">
                 <div class="mb-4">
                   <h4 class="text-xl font-medium text-ibm-black">
@@ -398,7 +372,6 @@
                     ¿Qué tan confiable es la información con la que trabajan?
                   </p>
                 </div>
-
                 <div class="flex items-center gap-6">
                   <div class="flex-grow relative h-10 flex items-center">
                     <div class="eq-track-container">
@@ -413,7 +386,6 @@
                       <div class="eq-node n3" id="node-data-3"></div>
                       <div class="eq-node n4" id="node-data-4"></div>
                       <div class="eq-node n5" id="node-data-5"></div>
-
                       <div class="click-layer">
                         <div
                           class="click-zone"
@@ -445,15 +417,14 @@
                   </div>
                   <div class="w-10 text-right">
                     <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      class="text-2xl font-light text-gray-300 transition-colors duration-200"
                       id="val-data"
                       >1</span
                     >
                   </div>
                 </div>
-
                 <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  class="mt-2 p-4 bg-subtle-gray border-l-4 border-gray-200 transition-colors duration-300 rounded-none"
                   id="box-data"
                 >
                   <p class="text-sm text-ibm-black italic" id="desc-data">
@@ -462,7 +433,7 @@
                 </div>
               </div>
 
-              <!-- Reglas -->
+              <!-- 3. Reglas -->
               <div class="group" onmouseleave="resetPreview('rules')">
                 <div class="mb-4">
                   <h4 class="text-xl font-medium text-ibm-black">
@@ -472,7 +443,6 @@
                     ¿Cómo se gestionan los datos y la toma de decisiones?
                   </p>
                 </div>
-
                 <div class="flex items-center gap-6">
                   <div class="flex-grow relative h-10 flex items-center">
                     <div class="eq-track-container">
@@ -487,7 +457,6 @@
                       <div class="eq-node n3" id="node-rules-3"></div>
                       <div class="eq-node n4" id="node-rules-4"></div>
                       <div class="eq-node n5" id="node-rules-5"></div>
-
                       <div class="click-layer">
                         <div
                           class="click-zone"
@@ -519,15 +488,14 @@
                   </div>
                   <div class="w-10 text-right">
                     <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      class="text-2xl font-light text-gray-300 transition-colors duration-200"
                       id="val-rules"
                       >1</span
                     >
                   </div>
                 </div>
-
                 <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  class="mt-2 p-4 bg-subtle-gray border-l-4 border-gray-200 transition-colors duration-300 rounded-none"
                   id="box-rules"
                 >
                   <p class="text-sm text-ibm-black italic" id="desc-rules">
@@ -536,7 +504,7 @@
                 </div>
               </div>
 
-              <!-- Personas -->
+              <!-- 4. Personas -->
               <div class="group" onmouseleave="resetPreview('people')">
                 <div class="mb-4">
                   <h4 class="text-xl font-medium text-ibm-black">Personas</h4>
@@ -545,7 +513,6 @@
                     con tecnología?
                   </p>
                 </div>
-
                 <div class="flex items-center gap-6">
                   <div class="flex-grow relative h-10 flex items-center">
                     <div class="eq-track-container">
@@ -560,7 +527,6 @@
                       <div class="eq-node n3" id="node-people-3"></div>
                       <div class="eq-node n4" id="node-people-4"></div>
                       <div class="eq-node n5" id="node-people-5"></div>
-
                       <div class="click-layer">
                         <div
                           class="click-zone"
@@ -592,15 +558,14 @@
                   </div>
                   <div class="w-10 text-right">
                     <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      class="text-2xl font-light text-gray-300 transition-colors duration-200"
                       id="val-people"
                       >1</span
                     >
                   </div>
                 </div>
-
                 <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  class="mt-2 p-4 bg-subtle-gray border-l-4 border-gray-200 transition-colors duration-300 rounded-none"
                   id="box-people"
                 >
                   <p class="text-sm text-ibm-black italic" id="desc-people">
@@ -609,7 +574,7 @@
                 </div>
               </div>
 
-              <!-- Uso -->
+              <!-- 5. Uso -->
               <div class="group" onmouseleave="resetPreview('use')">
                 <div class="mb-4">
                   <h4 class="text-xl font-medium text-ibm-black">
@@ -620,7 +585,6 @@
                     IA?
                   </p>
                 </div>
-
                 <div class="flex items-center gap-6">
                   <div class="flex-grow relative h-10 flex items-center">
                     <div class="eq-track-container">
@@ -635,7 +599,6 @@
                       <div class="eq-node n3" id="node-use-3"></div>
                       <div class="eq-node n4" id="node-use-4"></div>
                       <div class="eq-node n5" id="node-use-5"></div>
-
                       <div class="click-layer">
                         <div
                           class="click-zone"
@@ -667,15 +630,14 @@
                   </div>
                   <div class="w-10 text-right">
                     <span
-                      class="text-2xl font-mono text-gray-300 font-bold transition-colors duration-200"
+                      class="text-2xl font-light text-gray-300 transition-colors duration-200"
                       id="val-use"
                       >1</span
                     >
                   </div>
                 </div>
-
                 <div
-                  class="mt-2 p-4 bg-subtle-gray rounded border-l-4 border-gray-200 transition-colors duration-300"
+                  class="mt-2 p-4 bg-subtle-gray border-l-4 border-gray-200 transition-colors duration-300 rounded-none"
                   id="box-use"
                 >
                   <p class="text-sm text-ibm-black italic" id="desc-use">
@@ -686,10 +648,10 @@
             </div>
           </div>
 
-          <!-- COLUMNA DERECHA: SCORE -->
+          <!-- Score -->
           <div class="lg:col-span-4 sticky top-4 h-fit">
             <div
-              class="bg-ibm-black text-white p-6 lg:p-10 shadow-2xl relative overflow-hidden rounded-sm flex flex-col justify-between min-h-0 lg:min-h-[500px]"
+              class="bg-ibm-black text-white p-6 lg:p-10 relative overflow-hidden rounded-none flex flex-col justify-between min-h-0 lg:min-h-[500px]"
             >
               <div
                 class="absolute inset-0 opacity-10 pointer-events-none"
@@ -727,14 +689,14 @@
                       cx="128"
                       cy="128"
                       r="110"
-                      stroke="#0ee19f"
+                      stroke="#7cdee3"
                       stroke-width="10"
                       fill="none"
                       stroke-dasharray="691"
                       stroke-dashoffset="691"
                       class="transition-all duration-700 ease-out"
                       style="
-                        filter: drop-shadow(0 0 15px rgba(14, 225, 159, 0.5));
+                        filter: drop-shadow(0 0 15px rgba(124, 222, 227, 0.5));
                       "
                     ></circle>
                   </svg>
@@ -769,7 +731,7 @@
               <div class="relative z-10 mt-6">
                 <button
                   onclick="openModal()"
-                  class="w-full py-4 bg-white text-ibm-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-clinical-teal hover:text-ibm-black transition-colors flex items-center justify-center gap-3"
+                  class="w-full py-4 bg-white text-ibm-black text-xs font-bold uppercase tracking-[0.2em] hover:bg-clinical-teal hover:text-ibm-black transition-colors flex items-center justify-center gap-3 rounded-none"
                 >
                   <span>GENERAR INFORME</span>
                 </button>
@@ -790,7 +752,7 @@
         onclick="closeModal()"
       ></div>
       <div
-        class="bg-white w-full max-w-md p-10 relative z-10 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col rounded-sm border-t-4 border-clinical-teal"
+        class="bg-white w-full max-w-md p-10 relative z-10 shadow-2xl transform scale-95 opacity-0 transition-all duration-300 flex flex-col rounded-none border-t-8 border-clinical-teal"
         id="modalContent"
       >
         <div class="mb-8">
@@ -846,7 +808,7 @@
             type="button"
             id="btnSubmit"
             onclick="goToResults()"
-            class="w-full py-4 text-white text-xs font-bold uppercase tracking-widest transition-all mt-6 btn-disabled"
+            class="w-full py-4 text-white text-xs font-bold uppercase tracking-widest transition-all mt-6 btn-disabled rounded-none"
           >
             Descargar Informe
           </button>
@@ -985,15 +947,15 @@
             .classList.replace("border-clinical-teal", "border-gray-200");
         }
 
-        const desc = document.getElementById(`desc-${dim}`);
-        if (desc) desc.innerText = matrixData[dim][val - 1];
+        document.getElementById(`desc-${dim}`).innerText =
+          matrixData[dim][val - 1];
       }
 
       function calculateTotal() {
-        const values = Object.values(currentScores);
-        const total = values.reduce((a, b) => a + b, 0);
+        const total = Object.values(currentScores).reduce((a, b) => a + b, 0);
         let category = "NIVEL INICIAL",
           action = "Primero hay que ordenar la base";
+
         if (total >= 10 && total <= 14) {
           category = "NIVEL BÁSICO";
           action = "Se puede empezar con pilotos simples";
@@ -1021,28 +983,30 @@
         const name = document.getElementById("inputName").value.trim();
         const email = document.getElementById("inputEmail").value.trim();
         const btn = document.getElementById("btnSubmit");
-        if (name !== "" && email !== "") {
+        if (name && email) {
           btn.classList.remove("btn-disabled");
-          btn.classList.add("bg-ibm-black", "hover:bg-gray-800");
+          btn.classList.add("bg-ibm-black");
         } else {
           btn.classList.add("btn-disabled");
-          btn.classList.remove("bg-ibm-black", "hover:bg-gray-800");
+          btn.classList.remove("bg-ibm-black");
         }
       }
 
       function openModal() {
-        const m = document.getElementById("leadModal"),
-          c = document.getElementById("modalContent");
+        const m = document.getElementById("leadModal");
+        const c = document.getElementById("modalContent");
         m.classList.remove("hidden");
-        setTimeout(() => {
-          c.classList.remove("scale-95", "opacity-0");
-          c.classList.add("scale-100", "opacity-100");
-        }, 10);
+        setTimeout(
+          () =>
+            c.classList.remove("scale-95", "opacity-0") &&
+            c.classList.add("scale-100", "opacity-100"),
+          10,
+        );
       }
 
       function closeModal() {
-        const m = document.getElementById("leadModal"),
-          c = document.getElementById("modalContent");
+        const m = document.getElementById("leadModal");
+        const c = document.getElementById("modalContent");
         c.classList.remove("scale-100", "opacity-100");
         c.classList.add("scale-95", "opacity-0");
         setTimeout(() => m.classList.add("hidden"), 300);
@@ -1053,14 +1017,14 @@
         const email = document.getElementById("inputEmail").value.trim();
         const phone = document.getElementById("inputPhone").value.trim();
 
-        if (name === "" || email === "") return;
+        if (!name || !email) return;
 
         localStorage.setItem(
           "clinicalNexusData",
           JSON.stringify({
-            name: name,
-            email: email,
-            phone: phone,
+            name,
+            email,
+            phone,
             scores: currentScores,
             totalScore: document.getElementById("total-score").innerText,
           }),
@@ -1083,6 +1047,7 @@
         },
         { threshold: 0.1 },
       );
+
       document
         .querySelectorAll(".reveal")
         .forEach((el) => observer.observe(el));
