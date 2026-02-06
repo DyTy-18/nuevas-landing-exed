@@ -285,8 +285,8 @@
         class="absolute inset-0 bg-grid-fixed opacity-30 pointer-events-none"
       ></div>
       <div class="max-w-7xl mx-auto relative z-10">
-        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12">
-          <!-- Tarjeta de puntaje -->
+        <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 mb-10">
+          <!-- Tarjeta de puntaje (SIN CAMBIOS) -->
           <div class="lg:col-span-4">
             <div
               class="tech-card p-6 md:p-10 h-full flex flex-col items-center justify-center relative overflow-hidden rounded-sm min-h-[420px] md:min-h-[520px]"
@@ -347,81 +347,136 @@
             </div>
           </div>
 
-          <!-- Contenido principal -->
-          <div class="lg:col-span-8 flex flex-col gap-8">
-            <div class="pb-6 border-b border-gray-200">
-              <span
-                class="text-[10px] font-bold uppercase tracking-widest text-gray-500"
-                >Diagnóstico Ejecutivo</span
-              >
-              <h1
+          <!-- Contenido principal (NUEVO FORMATO) -->
+          <div class="lg:col-span-8 space-y-6">
+            <!-- Tu Situación Actual -->
+            <div>
+              <h2
+                class="text-lg font-bold text-neon uppercase tracking-wide mb-3"
                 id="level-title"
-                class="text-3xl md:text-5xl font-light mt-2 leading-tight"
-              ></h1>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6 md:gap-10">
-              <div>
-                <h4
-                  class="text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2"
-                >
-                  <span class="w-5 h-px bg-neon"></span> Situación actual
-                </h4>
-                <p
-                  id="level-desc"
-                  class="text-sm md:text-base text-gray-600 leading-relaxed"
-                ></p>
-              </div>
-              <div>
-                <h4
-                  class="text-xs font-bold uppercase tracking-widest mb-2 flex items-center gap-2"
-                >
-                  <span class="w-5 h-px bg-black"></span> Por qué ahora
-                </h4>
-                <p
-                  id="level-why"
-                  class="text-sm md:text-base text-gray-600 leading-relaxed"
-                ></p>
-              </div>
-            </div>
-
-            <div
-              id="project-block"
-              class="tech-card p-6 md:p-10 rounded-sm bg-white border border-gray-200"
-            >
-              <span
-                class="text-xs uppercase tracking-widest text-neon-dark font-bold block mb-4 pb-2 border-b border-gray-200"
-                >Proyecto recomendado</span
               >
+                Tu Situación Actual
+              </h2>
+              <p id="level-desc" class="text-gray-600 leading-relaxed"></p>
+            </div>
+
+            <!-- Proyecto Principal -->
+            <div>
               <h3
-                id="project-title"
-                class="text-xl md:text-2xl font-bold mb-3"
-              ></h3>
-              <p
-                id="project-detail"
-                class="text-sm md:text-base text-gray-600 mb-6 leading-relaxed"
-              ></p>
-              <div
-                id="level-fact"
-                class="bg-gray-50 p-4 text-sm italic border-l-4 border-neon mb-6"
-              ></div>
-              <div
-                class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 pt-6 border-t border-gray-200"
+                class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"
               >
-                <div>
-                  <span
-                    class="text-xs uppercase tracking-widest text-gray-500 block mb-1"
-                    >Próximo paso</span
-                  >
-                  <p id="level-next" class="text-sm font-medium"></p>
-                </div>
-                <a
-                  href="#cta"
-                  class="w-full md:w-auto text-center px-10 py-4 bg-black text-white text-xs font-bold uppercase tracking-widest hover:bg-neon hover:text-black transition-all rounded-sm shadow-md"
-                  >AGENDAR CITA</a
-                >
+                Proyecto Principal (Prioridad Q1)
+              </h3>
+              <div class="bg-surface border-l-4 border-neon p-5">
+                <h4
+                  id="project-title"
+                  class="font-bold text-text-main mb-2"
+                ></h4>
+                <p
+                  id="project-detail"
+                  class="text-gray-600 text-sm leading-relaxed"
+                ></p>
               </div>
             </div>
+
+            <!-- Proyectos Secundarios -->
+            <div>
+              <h3
+                class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3"
+              >
+                Proyectos Secundarios (Nivel Inicial)
+              </h3>
+              <div class="space-y-3" id="secondary-projects">
+                <div
+                  class="bg-white border border-gray-200 p-4 flex items-start gap-3 hover:border-neon transition-colors"
+                >
+                  <span class="text-neon font-bold">🔹</span>
+                  <div>
+                    <strong class="text-text-main"
+                      >Agente gestión pacientes:</strong
+                    >
+                    <span class="text-gray-600">
+                      Registro, estados y seguimiento.
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="bg-white border border-gray-200 p-4 flex items-start gap-3 hover:border-neon transition-colors"
+                >
+                  <span class="text-neon font-bold">🔹</span>
+                  <div>
+                    <strong class="text-text-main">Agente de citas:</strong>
+                    <span class="text-gray-600">
+                      Confirmación automática y recordatorios.
+                    </span>
+                  </div>
+                </div>
+                <div
+                  class="bg-white border border-gray-200 p-4 flex items-start gap-3 hover:border-neon transition-colors"
+                >
+                  <span class="text-neon font-bold">🔹</span>
+                  <div>
+                    <strong class="text-text-main"
+                      >Clasificador documental:</strong
+                    >
+                    <span class="text-gray-600">
+                      Orden y búsqueda de archivos operativos.
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sección Inferior: 2 Filas Separadas -->
+        <div class="border-t border-gray-200 pt-10 space-y-6">
+          <!-- Fila 1: Por qué este proyecto ahora -->
+          <div class="bg-amber-50 border border-amber-200 p-6">
+            <h3
+              class="text-lg font-bold text-amber-700 uppercase tracking-wide mb-4"
+            >
+              Por qué este proyecto ahora
+            </h3>
+            <div id="level-why" class="text-gray-700 leading-relaxed"></div>
+            <div
+              id="level-fact"
+              class="text-gray-700 leading-relaxed mt-3"
+            ></div>
+          </div>
+
+          <!-- Fila 2: Siguiente paso (Texto + Botón a la derecha) -->
+          <div
+            class="bg-surface border border-neon/30 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+          >
+            <div class="space-y-2">
+              <h3 class="text-lg font-bold text-neon uppercase tracking-wide">
+                Siguiente Paso
+              </h3>
+              <p
+                id="level-next"
+                class="text-gray-600 leading-relaxed max-w-2xl"
+              ></p>
+            </div>
+            <a
+              href="#cta"
+              class="inline-flex items-center justify-center gap-3 bg-black text-white px-8 py-4 font-bold uppercase tracking-wider text-sm hover:bg-neon hover:text-black transition-all duration-300 whitespace-nowrap flex-shrink-0"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+              Agendar Cita
+            </a>
           </div>
         </div>
       </div>
@@ -887,3 +942,15 @@
     </script>
   </body>
 </html>
+<!-- Calendly inline widget begin -->
+<div
+  class="calendly-inline-widget"
+  data-url="https://calendly.com/exed-unifranz/mi-proyecto-de-inteligencia-artificial"
+  style="min-width: 320px; height: 700px"
+></div>
+<script
+  type="text/javascript"
+  src="https://assets.calendly.com/assets/external/widget.js"
+  async
+></script>
+<!-- Calendly inline widget end -->
